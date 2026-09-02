@@ -1,0 +1,78 @@
+:host {
+  display: block;
+}
+
+.field-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+}
+
+.field-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.field-required {
+  color: var(--color-danger);
+}
+
+.field-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.field-input {
+  width: 100%;
+  height: 40px;
+  padding: 0 var(--space-3);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.field-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.field-input:hover:not(:disabled) {
+  border-color: var(--color-border-strong);
+}
+
+.field-input:disabled {
+  background-color: var(--color-surface-sunken);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+/* Error State */
+.field-has-error .field-input {
+  border-color: var(--color-danger);
+}
+
+.field-has-error .field-input:focus-visible {
+  outline-color: var(--color-danger) !important;
+}
+
+.field-message {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-normal);
+}
+
+.field-helper {
+  color: var(--color-text-muted);
+}
+
+.field-error {
+  color: var(--color-danger);
+  font-weight: var(--font-weight-medium);
+}

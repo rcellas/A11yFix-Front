@@ -1,0 +1,36 @@
+@if (isOpen()) {
+  <div class="dialog-backdrop" (click)="handleBackdropClick($event)">
+    <div
+      #dialogElement
+      class="dialog-panel"
+      role="dialog"
+      aria-modal="true"
+      [id]="id()"
+      [attr.aria-labelledby]="titleId()"
+      cdkTrapFocus
+      [cdkTrapFocusAutoCapture]="true"
+    >
+      <header class="dialog-header">
+        <h2 [id]="titleId()" class="dialog-title">
+          {{ title() }}
+        </h2>
+        <app-button
+          variant="ghost"
+          size="sm"
+          ariaLabel="Cerrar diálogo"
+          (clicked)="close()"
+        >
+          ✕
+        </app-button>
+      </header>
+
+      <div class="dialog-body">
+        <ng-content></ng-content>
+      </div>
+
+      <footer class="dialog-footer">
+        <ng-content select="[dialog-actions]"></ng-content>
+      </footer>
+    </div>
+  </div>
+}

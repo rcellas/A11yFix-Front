@@ -1,0 +1,44 @@
+<div class="tabs-container">
+  <div
+    class="tabs-list"
+    role="tablist"
+    [attr.aria-label]="ariaLabel()"
+  >
+    @for (tab of tabs(); track tab.id; let idx = $index) {
+      <button
+        #tabButton
+        type="button"
+        role="tab"
+        class="tab-btn"
+        [class.tab-btn-active]="currentActiveId() === tab.id"
+        [id]="id() + '-tab-' + tab.id"
+        [attr.aria-selected]="currentActiveId() === tab.id"
+        [attr.aria-controls]="id() + '-panel-' + tab.id"
+        [tabIndex]="currentActiveId() === tab.id ? 0 : -1"
+        (click)="selectTab(tab.id)"
+        (keydown)="handleKeyDown($event, idx)"
+      >
+        <span class="tab-label">{{ tab.label }}</span>
+        @if (tab.badge) {
+          <span class="tab-badge" aria-hidden="true">{{ tab.badge }}</span>
+        }
+      </button>
+    }
+  </div>
+
+  <div class="tabs-panels">
+    @for (tab of tabs(); track tab.id) {
+      <div
+        role="tabpanel"
+        class="tab-panel"
+        [class.tab-panel-active]="currentActiveId() === tab.id"
+        [id]="id() + '-panel-' + tab.id"
+        [attr.aria-labelledby]="id() + '-tab-' + tab.id"
+        [hidden]="currentActiveId() !== tab.id"
+        tabindex="0"
+      >
+        <ng-content [select]="'[tab-' + tab.id + ']'"></ng-content>
+      </div>
+    }
+  </div>
+</div>

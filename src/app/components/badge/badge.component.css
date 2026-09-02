@@ -1,0 +1,105 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-family: inherit;
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+/* Sizing */
+.badge-sm {
+  padding: 2px var(--space-1-5);
+  font-size: 0.6875rem; /* 11px */
+}
+
+.badge-md {
+  padding: 3px var(--space-2);
+  font-size: var(--font-size-xs); /* 12px */
+}
+
+/* Indicator Dot */
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background-color: currentColor;
+}
+
+/* WCAG 2.2 Conformance Levels */
+.badge-wcag-a {
+  background-color: var(--color-wcag-a-bg);
+  color: var(--color-wcag-a-text);
+  border-color: var(--color-wcag-a-border);
+}
+
+.badge-wcag-aa {
+  background-color: var(--color-wcag-aa-bg);
+  color: var(--color-wcag-aa-text);
+  border-color: var(--color-wcag-aa-border);
+}
+
+.badge-wcag-aaa {
+  background-color: var(--color-wcag-aaa-bg);
+  color: var(--color-wcag-aaa-text);
+  border-color: var(--color-wcag-aaa-border);
+}
+
+/* Finding Severities */
+.badge-critical {
+  background-color: var(--color-severity-critical-bg);
+  color: var(--color-severity-critical-text);
+  border-color: var(--color-severity-critical-border);
+}
+
+.badge-serious {
+  background-color: var(--color-severity-serious-bg);
+  color: var(--color-severity-serious-text);
+  border-color: var(--color-severity-serious-border);
+}
+
+.badge-moderate {
+  background-color: var(--color-severity-moderate-bg);
+  color: var(--color-severity-moderate-text);
+  border-color: var(--color-severity-moderate-border);
+}
+
+.badge-minor {
+  background-color: var(--color-severity-minor-bg);
+  color: var(--color-severity-minor-text);
+  border-color: var(--color-severity-minor-border);
+}
+
+/* Status Variants */
+.badge-success {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+  border-color: var(--color-success-border);
+}
+
+.badge-warning {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+  border-color: var(--color-warning-border);
+}
+
+.badge-danger {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  border-color: var(--color-danger-border);
+}
+
+.badge-info {
+  background-color: var(--color-info-bg);
+  color: var(--color-info);
+  border-color: var(--color-info-border);
+}
+
+.badge-neutral {
+  background-color: var(--color-surface-sunken);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border);
+}

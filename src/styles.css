@@ -3,7 +3,7 @@
    Clean reset, design tokens, focus management & screen reader utilities
    ========================================================================== */
 
-@import './app/design-system/tokens/index.css';
+@import './app/components/tokens/index.css';
 
 *,
 *::before,

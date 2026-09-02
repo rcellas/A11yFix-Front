@@ -1,0 +1,17 @@
+<button
+  [type]="type()"
+  [class]="buttonClasses()"
+  [disabled]="disabled()"
+  [attr.aria-disabled]="isEffectivelyDisabled() ? 'true' : null"
+  [attr.aria-busy]="loading() ? 'true' : null"
+  [attr.aria-label]="ariaLabel() || null"
+  (click)="handleClick($event)"
+>
+  @if (loading()) {
+    <span class="btn-spinner" aria-hidden="true"></span>
+    <span class="sr-only">Cargando...</span>
+  }
+  <span class="btn-content" [class.btn-content-hidden]="loading()">
+    <ng-content></ng-content>
+  </span>
+</button>

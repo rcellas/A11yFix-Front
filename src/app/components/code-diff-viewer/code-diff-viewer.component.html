@@ -1,0 +1,27 @@
+<div class="diff-container" role="region" [attr.aria-label]="'Diff de código para ' + filename()">
+  <div class="diff-header">
+    <span class="diff-filename">{{ filename() }}</span>
+    <button
+      type="button"
+      class="diff-copy-btn"
+      (click)="copyToClipboard()"
+      [attr.aria-label]="copied() ? 'Copiado al portapapeles' : 'Copiar diff de código'"
+    >
+      {{ copied() ? '✓ Copiado' : 'Copiar código' }}
+    </button>
+  </div>
+
+  <pre class="diff-pre"><code class="diff-code">
+    @for (line of parsedLines(); track $index) {
+      <div
+        class="diff-line diff-line-{{ line.type }}"
+        [attr.aria-label]="line.type === 'added' ? 'Línea añadida' : line.type === 'removed' ? 'Línea eliminada' : null"
+      >
+        <span class="diff-gutter-old" aria-hidden="true">{{ line.lineNumberOld || '' }}</span>
+        <span class="diff-gutter-new" aria-hidden="true">{{ line.lineNumberNew || '' }}</span>
+        <span class="diff-sign" aria-hidden="true">{{ line.type === 'added' ? '+' : line.type === 'removed' ? '-' : ' ' }}</span>
+        <span class="diff-content">{{ line.content }}</span>
+      </div>
+    }
+  </code></pre>
+</div>
