@@ -10,6 +10,7 @@
 npm-debug.log
 yarn-error.log
 pnpm-debug.log
+*.log
 
 # IDE and Editor files
 .idea/

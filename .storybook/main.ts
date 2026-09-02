@@ -9,6 +9,14 @@ const config: StorybookConfig = {
   framework: {
     name: '@storybook/angular',
     options: {}
+  },
+  webpackFinal: async (config) => {
+    config.resolve = config.resolve || {};
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'zone.js': false
+    };
+    return config;
   }
 };
 
