@@ -3,7 +3,7 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { HttpAuditApiClient } from './core/adapters/http-audit-api.client';
+import { MockAuditApiClient } from './core/adapters/mock-audit-api.client';
 import { AUDIT_API_CLIENT } from './core/ports/audit-api.port';
 
 export const appConfig: ApplicationConfig = {
@@ -13,7 +13,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch()),
     {
       provide: AUDIT_API_CLIENT,
-      useClass: HttpAuditApiClient
+      useClass: MockAuditApiClient
     }
   ]
 };
