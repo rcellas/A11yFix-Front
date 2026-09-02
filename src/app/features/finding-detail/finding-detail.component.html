@@ -1,0 +1,148 @@
+@if (selectedFinding(); as finding) {
+  <article class="detail-container" aria-labelledby="detail-title">
+    <!-- Header -->
+    <header class="detail-header">
+      <div class="header-badges">
+        <app-badge [variant]="finding.severity">{{ finding.severity | uppercase }}</app-badge>
+        @if (finding.wcagCriterion; as wcag) {
+          <app-badge variant="info">WCAG {{ wcag.id }} — Level {{ wcag.level }}</app-badge>
+        }
+        @if (finding.patternType) {
+          <app-badge variant="neutral">APG {{ finding.patternType | uppercase }}</app-badge>
+        }
+      </div>
+
+      <h3 id="detail-title" class="detail-rule">{{ finding.ruleId }}</h3>
+      <p class="detail-message">{{ finding.message }}</p>
+    </header>
+
+    <!-- WCAG Criterion Info -->
+    @if (finding.wcagCriterion; as wcag) {
+      <section class="wcag-box" aria-labelledby="wcag-spec-heading">
+        <h4 id="wcag-spec-heading" class="section-heading">WCAG 2.2 Success Criterion {{ wcag.id }}: {{ wcag.name }}</h4>
+        <p class="wcag-desc">{{ wcag.description }}</p>
+        <div class="wcag-meta">
+          <span class="meta-item"><strong>Principle:</strong> {{ wcag.principle }}</span>
+          <span class="meta-item"><strong>Level:</strong> {{ wcag.level }}</span>
+          <a [href]="wcag.url" target="_blank" rel="noopener noreferrer" class="wcag-link" aria-label="Read WCAG 2.2 specification for {{ wcag.name }} (opens in new tab)">
+            Read W3C Specification ↗
+          </a>
+        </div>
+      </section>
+    }
+
+    <!-- Target Element Details -->
+    <section class="element-box" aria-labelledby="element-heading">
+      <h4 id="element-heading" class="section-heading">Target Selector & Snippet</h4>
+      <code class="element-selector">{{ finding.selector }}</code>
+      <pre class="element-snippet"><code>{{ finding.htmlSnippet }}</code></pre>
+    </section>
+
+    <!-- APG Pattern Recommendations -->
+    @if (apgPatternRule; as apg) {
+      <section class="apg-box" aria-labelledby="apg-heading">
+        <h4 id="apg-heading" class="section-heading">WAI-ARIA APG Pattern: {{ apg.name }}</h4>
+        <p class="apg-desc">{{ apg.description }}</p>
+        <div class="apg-requirements">
+          <div class="req-group">
+            <strong>Required Roles & Attributes:</strong>
+            <ul>
+              @for (attr of apg.requiredAttributes; track attr) {
+                <li><code>{{ attr }}</code></li>
+              }
+            </ul>
+          </div>
+          <div class="req-group">
+            <strong>Keyboard Interaction:</strong>
+            <ul>
+              @for (kb of apg.keyboardRequirements; track kb) {
+                <li>{{ kb }}</li>
+              }
+            </ul>
+          </div>
+        </div>
+      </section>
+    }
+
+    <!-- Remediation Proposal & Code Diff -->
+    @if (finding.remediation; as rem) {
+      <section class="remediation-section" aria-labelledby="remediation-heading">
+        <div class="remediation-header">
+          <h4 id="remediation-heading" class="section-heading">AI Remediation Proposal</h4>
+          <span class="status-indicator">
+            @if (remediationFacade.isAwaitingApproval()) {
+              <app-badge variant="warning">Awaiting Human Approval</app-badge>
+            } @else if (remediationFacade.isApproved()) {
+              <app-badge variant="success">Approved by Auditor</app-badge>
+            } @else if (remediationFacade.isApplied()) {
+              <app-badge variant="info">Applied to Codebase</app-badge>
+            } @else if (remediationFacade.isRejected()) {
+              <app-badge variant="critical">Rejected</app-badge>
+            }
+          </span>
+        </div>
+
+        <p class="remediation-explanation">{{ rem.explanation }}</p>
+
+        <!-- Code Diff Viewer -->
+        <app-code-diff-viewer
+          [diffText]="diffText()"
+          filename="remediation.html"
+        />
+
+        <!-- Human Approval Barrier Section -->
+        <div class="approval-barrier-box" role="region" aria-labelledby="barrier-heading">
+          <div class="barrier-header">
+            <h5 id="barrier-heading" class="barrier-title">Human Approval Barrier</h5>
+            <p class="barrier-subtitle">
+              Security & QA Policy: Automated code modifications strictly require verified human engineer approval before applying.
+            </p>
+          </div>
+
+          @if (feedbackMessage(); as feedback) {
+            <div class="feedback-banner" role="status">{{ feedback }}</div>
+          }
+
+          <div class="barrier-actions">
+            @if (remediationFacade.isAwaitingApproval()) {
+              <app-button
+                variant="primary"
+                size="md"
+                (btnClick)="approveRemediation()"
+                ariaLabel="Approve remediation proposal"
+              >
+                ✓ Approve Proposal
+              </app-button>
+
+              <app-button
+                variant="secondary"
+                size="md"
+                (btnClick)="rejectRemediation()"
+                ariaLabel="Reject remediation proposal"
+              >
+                ✕ Reject
+              </app-button>
+            } @else if (remediationFacade.isApproved()) {
+              <app-button
+                variant="primary"
+                size="md"
+                (btnClick)="applyRemediation()"
+                ariaLabel="Apply approved fix to codebase"
+              >
+                Apply Fix to Codebase
+              </app-button>
+            } @else if (remediationFacade.isApplied()) {
+              <p class="applied-success">
+                Fix applied cleanly. Run verification to confirm zero regressions.
+              </p>
+            }
+          </div>
+        </div>
+      </section>
+    }
+  </article>
+} @else {
+  <div class="empty-selection" role="status">
+    <p>Select a finding from the list to inspect its WCAG 2.2 criterion and AI remediation diff.</p>
+  </div>
+}
