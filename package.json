@@ -24,6 +24,8 @@
   "private": true,
   "packageManager": "pnpm@11.25.0",
   "dependencies": {
+    "@angular/aria": "^22.1.4",
+    "@angular/cdk": "^22.1.4",
     "@angular/common": "21.1.0",
     "@angular/compiler": "21.1.0",
     "@angular/core": "21.1.0",
