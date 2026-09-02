@@ -1,0 +1,106 @@
+.audit-workspace-bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--elevation-sm);
+}
+
+.workspace-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.workspace-title {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+}
+
+.workspace-subtitle {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.scan-form {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.input-wrapper {
+  flex: 1;
+}
+
+.action-wrapper {
+  margin-top: 1.65rem;
+}
+
+.scan-progress-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.progress-track {
+  width: 100%;
+  height: 4px;
+  background: var(--color-surface-hover);
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-indicator {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  background: var(--color-primary);
+  border-radius: 9999px;
+  animation: scanning 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes scanning {
+  0% {
+    left: -40%;
+    width: 30%;
+  }
+  50% {
+    left: 40%;
+    width: 60%;
+  }
+  100% {
+    left: 100%;
+    width: 30%;
+  }
+}
+
+.progress-text {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+@media (max-width: 640px) {
+  .scan-form {
+    flex-direction: column;
+  }
+  .action-wrapper {
+    margin-top: 0;
+    width: 100%;
+  }
+  .action-wrapper a11y-button {
+    width: 100%;
+  }
+}

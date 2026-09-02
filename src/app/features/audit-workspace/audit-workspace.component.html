@@ -1,0 +1,49 @@
+<section class="audit-workspace-bar" aria-labelledby="scan-heading">
+  <div class="workspace-header">
+    <h2 id="scan-heading" class="workspace-title">Accessibility QA Inspector</h2>
+    <p class="workspace-subtitle">
+      Automated WCAG 2.2 detection, AI-guided ARIA pattern remediation, and human-verified fixes.
+    </p>
+  </div>
+
+  <form class="scan-form" (ngSubmit)="startAudit()" role="search" aria-label="Website Accessibility Audit">
+    <div class="input-wrapper">
+      <app-text-field
+        id="target-url-input"
+        label="Target URL"
+        placeholder="https://example.com"
+        type="url"
+        [value]="urlInput()"
+        [errorMessage]="errorMessage() || auditFacade.error() || ''"
+        [disabled]="auditFacade.isScanning()"
+        [required]="true"
+        (valueChange)="onUrlChange($event)"
+      />
+    </div>
+
+    <div class="action-wrapper">
+      <app-button
+        variant="primary"
+        size="md"
+        type="submit"
+        [disabled]="auditFacade.isScanning()"
+        ariaLabel="Run accessibility audit scan"
+      >
+        @if (auditFacade.isScanning()) {
+          Scanning...
+        } @else {
+          Audit Website
+        }
+      </app-button>
+    </div>
+  </form>
+
+  @if (auditFacade.isScanning()) {
+    <div class="scan-progress-container" role="progressbar" aria-label="Audit scanning progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45">
+      <div class="progress-track">
+        <div class="progress-indicator"></div>
+      </div>
+      <p class="progress-text">Analyzing DOM tree, color contrast, and WAI-ARIA APG compliance...</p>
+    </div>
+  }
+</section>
