@@ -1,0 +1,145 @@
+// ============================================================================
+// A11yFix Design System: Color Tokens
+// Strict WCAG 2.2 Level AA / AAA Compliant Contrast Palette
+// ============================================================================
+
+:root {
+  // Brand & Primary
+  --color-brand-50: #eef2ff;
+  --color-brand-100: #e0e7ff;
+  --color-brand-200: #c7d2fe;
+  --color-brand-500: #4f46e5;
+  --color-brand-600: #4338ca;
+  --color-brand-700: #3730a3;
+  --color-brand-900: #1e1b4b;
+
+  // Semantic Theme Colors (Light Theme Baseline)
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #ffffff;
+  --color-surface-sunken: #f1f5f9;
+
+  --color-text-primary: #0f172a;    // Contrast > 13:1 on surface
+  --color-text-secondary: #334155;  // Contrast > 7:1 on surface
+  --color-text-muted: #475569;      // Contrast > 4.5:1 on surface (WCAG AA valid)
+  --color-text-inverse: #ffffff;
+
+  --color-border: #cbd5e1;
+  --color-border-subtle: #e2e8f0;
+  --color-border-strong: #64748b;
+
+  // Focus Indicator (High Contrast: 3:1+ against both white and black)
+  --color-focus-ring: #2563eb;
+  --color-focus-ring-offset: #ffffff;
+
+  // Status Colors (Compliant 4.5:1+ text contrast on surface)
+  --color-success: #15803d;
+  --color-success-bg: #f0fdf4;
+  --color-success-border: #86efac;
+
+  --color-warning: #b45309;
+  --color-warning-bg: #fffbeb;
+  --color-warning-border: #fde68a;
+
+  --color-danger: #b91c1c;
+  --color-danger-bg: #fef2f2;
+  --color-danger-border: #fca5a5;
+
+  --color-info: #0369a1;
+  --color-info-bg: #f0f9ff;
+  --color-info-border: #7dd3fc;
+
+  // Severity Badges (Audits & Findings)
+  --color-severity-critical-text: #991b1b;
+  --color-severity-critical-bg: #fee2e2;
+  --color-severity-critical-border: #f87171;
+
+  --color-severity-serious-text: #9a3412;
+  --color-severity-serious-bg: #ffedd5;
+  --color-severity-serious-border: #fb923c;
+
+  --color-severity-moderate-text: #854d0e;
+  --color-severity-moderate-bg: #fef9c3;
+  --color-severity-moderate-border: #facc15;
+
+  --color-severity-minor-text: #334155;
+  --color-severity-minor-bg: #f1f5f9;
+  --color-severity-minor-border: #94a3b8;
+
+  // WCAG 2.2 Conformance Level Tokens
+  --color-wcag-a-text: #1e3a8a;
+  --color-wcag-a-bg: #dbeafe;
+  --color-wcag-a-border: #60a5fa;
+
+  --color-wcag-aa-text: #065f46;
+  --color-wcag-aa-bg: #d1fae5;
+  --color-wcag-aa-border: #34d399;
+
+  --color-wcag-aaa-text: #581c87;
+  --color-wcag-aaa-bg: #f3e8ff;
+  --color-wcag-aaa-border: #c084fc;
+}
+
+// Dark Mode Theme Tokens
+[data-theme='dark'] {
+  --color-bg: #090d16;
+  --color-surface: #111827;
+  --color-surface-elevated: #1f2937;
+  --color-surface-sunken: #0b1120;
+
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #cbd5e1;
+  --color-text-muted: #94a3b8;
+  --color-text-inverse: #0f172a;
+
+  --color-border: #334155;
+  --color-border-subtle: #1e293b;
+  --color-border-strong: #64748b;
+
+  --color-focus-ring: #60a5fa;
+  --color-focus-ring-offset: #111827;
+
+  --color-success: #4ade80;
+  --color-success-bg: #052e16;
+  --color-success-border: #166534;
+
+  --color-warning: #fbbf24;
+  --color-warning-bg: #451a03;
+  --color-warning-border: #92400e;
+
+  --color-danger: #f87171;
+  --color-danger-bg: #450a0a;
+  --color-danger-border: #991b1b;
+
+  --color-info: #38bdf8;
+  --color-info-bg: #082f49;
+  --color-info-border: #075985;
+
+  --color-severity-critical-text: #fca5a5;
+  --color-severity-critical-bg: #450a0a;
+  --color-severity-critical-border: #991b1b;
+
+  --color-severity-serious-text: #fdba74;
+  --color-severity-serious-bg: #431407;
+  --color-severity-serious-border: #9a3412;
+
+  --color-severity-moderate-text: #fef08a;
+  --color-severity-moderate-bg: #422006;
+  --color-severity-moderate-border: #854d0e;
+
+  --color-severity-minor-text: #cbd5e1;
+  --color-severity-minor-bg: #1e293b;
+  --color-severity-minor-border: #475569;
+
+  --color-wcag-a-text: #93c5fd;
+  --color-wcag-a-bg: #172554;
+  --color-wcag-a-border: #1e40af;
+
+  --color-wcag-aa-text: #6ee7b7;
+  --color-wcag-aa-bg: #022c22;
+  --color-wcag-aa-border: #065f46;
+
+  --color-wcag-aaa-text: #d8b4fe;
+  --color-wcag-aaa-bg: #3b0764;
+  --color-wcag-aaa-border: #6b21a8;
+}

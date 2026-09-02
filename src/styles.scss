@@ -1,1 +1,104 @@
-/* You can add global styles to this file, and also import other style files */
+// ============================================================================
+// A11yFix Web: Global Accessible Styles
+// Clean reset, design tokens, focus management & screen reader utilities
+// ============================================================================
+
+@use 'src/app/design-system/tokens' as *;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+// Universal Accessible Keyboard Focus Indicator
+:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--color-focus-ring) !important;
+  outline-offset: var(--focus-ring-offset) !important;
+}
+
+// Remove outlines for mouse clicks while keeping keyboard focus
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+// Respect Reduced Motion (WCAG 2.3.3)
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// ============================================================================
+// Accessibility Utilities
+// ============================================================================
+
+// Screen Reader Only (Visually Hidden, Screen Reader Accessible)
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+// Focusable Screen Reader Only (Reveals visually when focused)
+.sr-only-focusable:focus,
+.sr-only-focusable:focus-visible {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  clip: auto !important;
+  white-space: normal !important;
+}
+
+// Skip to Main Content Link (WCAG 2.4.1 Bypass Blocks)
+.skip-link {
+  position: absolute;
+  top: -999px;
+  left: var(--space-4);
+  z-index: var(--z-modal);
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--color-surface);
+  color: var(--color-brand-600);
+  border: 2px solid var(--color-focus-ring);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+
+  &:focus,
+  &:focus-visible {
+    top: var(--space-4);
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--color-focus-ring);
+  }
+}
