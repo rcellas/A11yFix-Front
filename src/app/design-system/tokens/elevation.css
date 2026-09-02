@@ -1,7 +1,6 @@
-// ============================================================================
-// A11yFix Design System: Elevation & Shadow Tokens
-// Accessible Elevation with High-Contrast Fallback Borders
-// ============================================================================
+/* ==========================================================================
+   A11yFix Design System: Elevation & Shadow Tokens (Vanilla CSS)
+   ========================================================================== */
 
 :root {
   --shadow-none: none;
@@ -10,12 +9,12 @@
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
 
-  // Transitions for accessible motion (respects prefers-reduced-motion)
+  /* Transitions */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
 
-  // Z-Index hierarchy
+  /* Z-Index hierarchy */
   --z-base: 0;
   --z-elevated: 10;
   --z-dropdown: 100;

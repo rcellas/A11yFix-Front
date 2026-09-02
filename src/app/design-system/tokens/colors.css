@@ -1,10 +1,10 @@
-// ============================================================================
-// A11yFix Design System: Color Tokens
-// Strict WCAG 2.2 Level AA / AAA Compliant Contrast Palette
-// ============================================================================
+/* ==========================================================================
+   A11yFix Design System: Color Tokens (Vanilla CSS)
+   Strict WCAG 2.2 Level AA / AAA Compliant Contrast Palette
+   ========================================================================== */
 
 :root {
-  // Brand & Primary
+  /* Brand & Primary */
   --color-brand-50: #eef2ff;
   --color-brand-100: #e0e7ff;
   --color-brand-200: #c7d2fe;
@@ -13,26 +13,26 @@
   --color-brand-700: #3730a3;
   --color-brand-900: #1e1b4b;
 
-  // Semantic Theme Colors (Light Theme Baseline)
+  /* Semantic Theme Colors (Light Theme Baseline) */
   --color-bg: #f8fafc;
   --color-surface: #ffffff;
   --color-surface-elevated: #ffffff;
   --color-surface-sunken: #f1f5f9;
 
-  --color-text-primary: #0f172a;    // Contrast > 13:1 on surface
-  --color-text-secondary: #334155;  // Contrast > 7:1 on surface
-  --color-text-muted: #475569;      // Contrast > 4.5:1 on surface (WCAG AA valid)
+  --color-text-primary: #0f172a;    /* Contrast > 13:1 on surface */
+  --color-text-secondary: #334155;  /* Contrast > 7:1 on surface */
+  --color-text-muted: #475569;      /* Contrast > 4.5:1 on surface (WCAG AA valid) */
   --color-text-inverse: #ffffff;
 
   --color-border: #cbd5e1;
   --color-border-subtle: #e2e8f0;
   --color-border-strong: #64748b;
 
-  // Focus Indicator (High Contrast: 3:1+ against both white and black)
+  /* Focus Indicator (High Contrast: 3:1+ against background) */
   --color-focus-ring: #2563eb;
   --color-focus-ring-offset: #ffffff;
 
-  // Status Colors (Compliant 4.5:1+ text contrast on surface)
+  /* Status Colors (Compliant 4.5:1+ text contrast on surface) */
   --color-success: #15803d;
   --color-success-bg: #f0fdf4;
   --color-success-border: #86efac;
@@ -49,7 +49,7 @@
   --color-info-bg: #f0f9ff;
   --color-info-border: #7dd3fc;
 
-  // Severity Badges (Audits & Findings)
+  /* Severity Badges (Audits & Findings) */
   --color-severity-critical-text: #991b1b;
   --color-severity-critical-bg: #fee2e2;
   --color-severity-critical-border: #f87171;
@@ -66,7 +66,7 @@
   --color-severity-minor-bg: #f1f5f9;
   --color-severity-minor-border: #94a3b8;
 
-  // WCAG 2.2 Conformance Level Tokens
+  /* WCAG 2.2 Conformance Level Tokens */
   --color-wcag-a-text: #1e3a8a;
   --color-wcag-a-bg: #dbeafe;
   --color-wcag-a-border: #60a5fa;
@@ -80,7 +80,7 @@
   --color-wcag-aaa-border: #c084fc;
 }
 
-// Dark Mode Theme Tokens
+/* Dark Mode Theme Tokens */
 [data-theme='dark'] {
   --color-bg: #090d16;
   --color-surface: #111827;
