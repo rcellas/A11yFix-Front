@@ -1,2 +1,8 @@
-# Supply-chain security gate: minimum release age of 7 days (10,080 minutes)
-minimumReleaseAge: 10080
+allowBuilds:
+  '@parcel/watcher': true
+  esbuild: true
+  lmdb: true
+  msgpackr-extract: true
+
+# Supply-chain security gate: 1 day (1440 minutes) cooldown policy for newly published packages
+minimumReleaseAge: 1440
