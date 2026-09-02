@@ -1,0 +1,24 @@
+<div class="chip-group-container">
+  @for (option of options(); track option.id) {
+    <button
+      type="button"
+      class="chip"
+      [class.chip-selected]="isSelected(option.id)"
+      [attr.aria-pressed]="isSelected(option.id)"
+      (click)="toggleOption(option.id)"
+    >
+      @if (option.badgeVariant) {
+        <app-badge [variant]="option.badgeVariant" size="sm" [dot]="true">
+          {{ option.label }}
+        </app-badge>
+      } @else {
+        <span class="chip-label">{{ option.label }}</span>
+      }
+
+      @if (option.count !== undefined) {
+        <span class="chip-count" aria-hidden="true">{{ option.count }}</span>
+        <span class="sr-only">({{ option.count }} resultados)</span>
+      }
+    </button>
+  }
+</div>
