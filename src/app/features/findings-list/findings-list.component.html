@@ -1,0 +1,87 @@
+<section class="findings-container" aria-labelledby="findings-heading">
+  <div class="findings-header">
+    <div class="header-main">
+      <h3 id="findings-heading" class="findings-title">
+        Audit Findings
+        @if (auditFacade.summary(); as sum) {
+          <span class="count-badge" aria-label="Total {{ sum.totalFindings }} findings">({{ sum.totalFindings }})</span>
+        }
+      </h3>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-panel">
+      <div class="filter-row">
+        <span class="filter-label" id="severity-filter-label">Severity:</span>
+        <app-filter-chip-group
+          ariaLabel="Filter findings by severity"
+          [options]="severityOptions"
+          [selectedIds]="selectedSeverityIds()"
+          [multiSelect]="false"
+          (selectedIdsChange)="onSeverityChange($event)"
+        />
+      </div>
+
+      <div class="filter-row">
+        <span class="filter-label" id="wcag-filter-label">WCAG 2.2:</span>
+        <app-filter-chip-group
+          ariaLabel="Filter findings by WCAG conformance level"
+          [options]="wcagLevelOptions"
+          [selectedIds]="selectedWcagLevelIds()"
+          [multiSelect]="false"
+          (selectedIdsChange)="onWcagLevelChange($event)"
+        />
+      </div>
+
+      <div class="search-box">
+        <app-text-field
+          id="finding-search-input"
+          label="Search findings"
+          placeholder="Filter by rule, selector, or message..."
+          type="search"
+          [value]="searchQuery()"
+          (valueChange)="onSearchChange($event)"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Findings List -->
+  <div class="findings-list" role="list" aria-label="Accessibility findings">
+    @for (finding of auditFacade.filteredFindings(); track finding.id) {
+      <div
+        role="listitem"
+        class="finding-item"
+        [class.selected]="isSelected(finding)"
+        (click)="selectFinding(finding)"
+        (keydown.enter)="selectFinding(finding)"
+        (keydown.space)="selectFinding(finding)"
+        tabindex="0"
+        [attr.aria-selected]="isSelected(finding)"
+      >
+        <app-card [elevated]="isSelected(finding)" [interactive]="true">
+          <div slot="header" class="finding-card-header">
+            <div class="badges-group">
+              <app-badge [variant]="finding.severity">{{ finding.severity | uppercase }}</app-badge>
+              @if (finding.wcagCriterion; as wcag) {
+                <app-badge variant="info">WCAG {{ wcag.id }} ({{ wcag.level }})</app-badge>
+              }
+              @if (finding.patternType) {
+                <app-badge variant="neutral">APG {{ finding.patternType | uppercase }}</app-badge>
+              }
+            </div>
+            <code class="rule-id">{{ finding.ruleId }}</code>
+          </div>
+
+          <p class="finding-message">{{ finding.message }}</p>
+          <code class="finding-selector" title="DOM Selector">{{ finding.selector }}</code>
+        </app-card>
+      </div>
+    } @empty {
+      <div class="empty-state" role="status">
+        <p class="empty-title">No findings match the current filters</p>
+        <p class="empty-subtitle">Try adjusting your severity or WCAG level criteria.</p>
+      </div>
+    }
+  </div>
+</section>
