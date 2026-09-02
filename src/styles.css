@@ -1,9 +1,9 @@
-// ============================================================================
-// A11yFix Web: Global Accessible Styles
-// Clean reset, design tokens, focus management & screen reader utilities
-// ============================================================================
+/* ==========================================================================
+   A11yFix Web: Global Accessible Styles (Vanilla CSS)
+   Clean reset, design tokens, focus management & screen reader utilities
+   ========================================================================== */
 
-@use 'src/app/design-system/tokens' as *;
+@import './app/design-system/tokens/index.css';
 
 *,
 *::before,
@@ -30,18 +30,18 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-// Universal Accessible Keyboard Focus Indicator
+/* Universal Accessible Keyboard Focus Indicator */
 :focus-visible {
   outline: var(--focus-ring-width) var(--focus-ring-style) var(--color-focus-ring) !important;
   outline-offset: var(--focus-ring-offset) !important;
 }
 
-// Remove outlines for mouse clicks while keeping keyboard focus
+/* Remove outlines for mouse clicks while keeping keyboard focus */
 :focus:not(:focus-visible) {
   outline: none;
 }
 
-// Respect Reduced Motion (WCAG 2.3.3)
+/* Respect Reduced Motion (WCAG 2.3.3) */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -53,11 +53,11 @@ body {
   }
 }
 
-// ============================================================================
-// Accessibility Utilities
-// ============================================================================
+/* ==========================================================================
+   Accessibility Utilities
+   ========================================================================== */
 
-// Screen Reader Only (Visually Hidden, Screen Reader Accessible)
+/* Screen Reader Only (Visually Hidden, Screen Reader Accessible) */
 .sr-only {
   position: absolute !important;
   width: 1px !important;
@@ -70,7 +70,7 @@ body {
   border: 0 !important;
 }
 
-// Focusable Screen Reader Only (Reveals visually when focused)
+/* Focusable Screen Reader Only (Reveals visually when focused) */
 .sr-only-focusable:focus,
 .sr-only-focusable:focus-visible {
   position: static !important;
@@ -82,7 +82,7 @@ body {
   white-space: normal !important;
 }
 
-// Skip to Main Content Link (WCAG 2.4.1 Bypass Blocks)
+/* Skip to Main Content Link (WCAG 2.4.1 Bypass Blocks) */
 .skip-link {
   position: absolute;
   top: -999px;
@@ -95,10 +95,10 @@ body {
   border-radius: var(--radius-md);
   font-weight: var(--font-weight-semibold);
   text-decoration: none;
+}
 
-  &:focus,
-  &:focus-visible {
-    top: var(--space-4);
-    outline: var(--focus-ring-width) var(--focus-ring-style) var(--color-focus-ring);
-  }
+.skip-link:focus,
+.skip-link:focus-visible {
+  top: var(--space-4);
+  outline: var(--focus-ring-width) var(--focus-ring-style) var(--color-focus-ring);
 }

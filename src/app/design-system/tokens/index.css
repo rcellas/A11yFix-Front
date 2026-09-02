@@ -1,0 +1,9 @@
+/* ==========================================================================
+   A11yFix Design System: Tokens Index (Vanilla CSS)
+   ========================================================================== */
+
+@import './colors.css';
+@import './typography.css';
+@import './spacing.css';
+@import './elevation.css';
+@import './focus.css';
