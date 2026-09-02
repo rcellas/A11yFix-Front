@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { BadgeComponent } from './components';
 import { AuditFacade } from './core/facades/audit.facade';
-import { WebMcpHostService } from './core/webmcp/webmcp-host.service';
+import { WebMcpHostService } from './core/webmcp';
 import { AuditWorkspaceComponent } from './features/audit-workspace/audit-workspace.component';
 import { FindingDetailComponent } from './features/finding-detail/finding-detail.component';
 import { FindingsListComponent } from './features/findings-list/findings-list.component';
