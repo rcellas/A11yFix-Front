@@ -120,10 +120,9 @@ Infrastructure Layer
 
 1. **Branching Model**:
    - `main`: Production release branch. **Never merge to `main` until explicitly instructed by the user.**
-   - `dev`: Primary integration branch.
-   - `spec/001-sdd-creation`: SDD baseline branch, merges into `dev`.
-   - `feat/TXXX-description`: Feature branches created from `dev` and merged back into `dev`.
-   - `fix/TXXX-description`: Bugfix branches created from `dev` and merged back into `dev`.
+   - `dev`: Primary integration branch. **Never commit directly to `dev` and never merge into `dev` unless explicitly instructed by the user.**
+   - `feat/description`: Feature branches created from `dev` where all work and granular commits are performed.
+   - `fix/description`: Bugfix branches created from `dev`.
 2. **Conventional Commits**:
    - Mandatory on EVERY commit.
    - Format: `<type>(<scope>): <subject>`
