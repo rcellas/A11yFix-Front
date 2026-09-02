@@ -33,3 +33,11 @@ pnpm-debug.log
 /.angular/cache
 .DS_Store
 Thumbs.db
+
+# Environment and credential security
+.env
+.env.*
+!.env.example
+/src/environments/environment.ts
+/src/environments/environment.*.ts
+!/src/environments/environment.template.ts
