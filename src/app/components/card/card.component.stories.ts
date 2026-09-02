@@ -1,7 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { CardComponent } from './card.component';
+import { CardComponent, CardPadding } from './card.component';
 
-const meta: Meta<CardComponent> = {
+export interface CardArgs {
+  elevated?: boolean;
+  interactive?: boolean;
+  padding?: CardPadding;
+}
+
+const meta: Meta<CardArgs> = {
   title: 'Components/Card',
   component: CardComponent,
   tags: ['autodocs'],
@@ -16,7 +22,7 @@ const meta: Meta<CardComponent> = {
 };
 
 export default meta;
-type Story = StoryObj<CardComponent>;
+type Story = StoryObj<CardArgs>;
 
 export const Default: Story = {
   args: {

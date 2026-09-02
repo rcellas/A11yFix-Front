@@ -1,14 +1,21 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { FilterChipGroupComponent } from './filter-chip-group.component';
+import { FilterChipGroupComponent, FilterOption } from './filter-chip-group.component';
 
-const meta: Meta<FilterChipGroupComponent> = {
+export interface FilterChipGroupArgs {
+  options: readonly FilterOption[];
+  ariaLabel?: string;
+  multiSelect?: boolean;
+  selectedIds?: string[];
+}
+
+const meta: Meta<FilterChipGroupArgs> = {
   title: 'Components/FilterChipGroup',
   component: FilterChipGroupComponent,
   tags: ['autodocs']
 };
 
 export default meta;
-type Story = StoryObj<FilterChipGroupComponent>;
+type Story = StoryObj<FilterChipGroupArgs>;
 
 export const WcagLevelFilters: Story = {
   args: {

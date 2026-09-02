@@ -1,7 +1,18 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { TextFieldComponent } from './text-field.component';
 
-const meta: Meta<TextFieldComponent> = {
+export interface TextFieldArgs {
+  label: string;
+  placeholder?: string;
+  helperText?: string;
+  errorMessage?: string;
+  required?: boolean;
+  disabled?: boolean;
+  type?: 'text' | 'url' | 'email' | 'search';
+  value?: string;
+}
+
+const meta: Meta<TextFieldArgs> = {
   title: 'Components/TextField',
   component: TextFieldComponent,
   tags: ['autodocs'],
@@ -20,7 +31,7 @@ const meta: Meta<TextFieldComponent> = {
 };
 
 export default meta;
-type Story = StoryObj<TextFieldComponent>;
+type Story = StoryObj<TextFieldArgs>;
 
 export const Default: Story = {
   args: {

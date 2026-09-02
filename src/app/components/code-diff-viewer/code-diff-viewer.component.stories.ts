@@ -1,14 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/angular';
 import { CodeDiffViewerComponent } from './code-diff-viewer.component';
 
-const meta: Meta<CodeDiffViewerComponent> = {
+export interface CodeDiffViewerArgs {
+  diffText: string;
+  filename?: string;
+}
+
+const meta: Meta<CodeDiffViewerArgs> = {
   title: 'Components/CodeDiffViewer',
   component: CodeDiffViewerComponent,
   tags: ['autodocs']
 };
 
 export default meta;
-type Story = StoryObj<CodeDiffViewerComponent>;
+type Story = StoryObj<CodeDiffViewerArgs>;
 
 const sampleDiff = `
 - <div class="modal-btn" onclick="openDialog()">

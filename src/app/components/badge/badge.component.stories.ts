@@ -1,7 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { BadgeComponent } from './badge.component';
+import { BadgeComponent, BadgeSize, BadgeVariant } from './badge.component';
 
-const meta: Meta<BadgeComponent> = {
+export interface BadgeArgs {
+  variant?: BadgeVariant;
+  size?: BadgeSize;
+  dot?: boolean;
+}
+
+const meta: Meta<BadgeArgs> = {
   title: 'Components/Badge',
   component: BadgeComponent,
   tags: ['autodocs'],
@@ -32,7 +38,7 @@ const meta: Meta<BadgeComponent> = {
 };
 
 export default meta;
-type Story = StoryObj<BadgeComponent>;
+type Story = StoryObj<BadgeArgs>;
 
 export const WcagLevelAA: Story = {
   args: {

@@ -1,7 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/angular';
-import { ButtonComponent } from './button.component';
+import { ButtonComponent, ButtonSize, ButtonVariant } from './button.component';
 
-const meta: Meta<ButtonComponent> = {
+export interface ButtonArgs {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
+  loading?: boolean;
+  ariaLabel?: string;
+}
+
+const meta: Meta<ButtonArgs> = {
   title: 'Components/Button',
   component: ButtonComponent,
   tags: ['autodocs'],
@@ -20,7 +29,7 @@ const meta: Meta<ButtonComponent> = {
 };
 
 export default meta;
-type Story = StoryObj<ButtonComponent>;
+type Story = StoryObj<ButtonArgs>;
 
 export const Primary: Story = {
   args: {
