@@ -50,4 +50,14 @@ describe('AuditWorkspaceComponent', () => {
     expect(facade.status()).toBe('completed');
     expect(facade.report()?.targetUrl).toBe('https://test-site.org');
   });
+
+  it('should automatically prepend https:// when domain is entered without protocol', async () => {
+    component.onUrlChange('rociocejudo.dev');
+    await component.startAudit();
+    fixture.detectChanges();
+
+    expect(component.errorMessage()).toBeNull();
+    expect(facade.status()).toBe('completed');
+    expect(facade.report()?.targetUrl).toBe('https://rociocejudo.dev');
+  });
 });
