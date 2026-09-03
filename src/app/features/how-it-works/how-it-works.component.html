@@ -1,0 +1,297 @@
+<a href="#hiw-main" class="skip-link">Skip to main content</a>
+
+<main id="hiw-main" class="hiw-page" role="main">
+
+  <!-- Hero -->
+  <section class="hiw-hero" aria-labelledby="hiw-title">
+    <div class="hiw-hero-inner">
+      <div class="hiw-hero-badge" aria-hidden="true">♿ How it works</div>
+      <h1 id="hiw-title" class="hiw-hero-title">
+        Accessibility QA,<br>
+        <span class="hiw-hero-accent">automated end-to-end</span>
+      </h1>
+      <p class="hiw-hero-subtitle">
+        A11yFix orchestrates the full WCAG 2.2 remediation lifecycle — from detecting violations to applying fixes — with an AI agent and a mandatory human approval gate.
+      </p>
+      <a routerLink="/" class="hiw-cta-btn" aria-label="Go to the audit workspace">
+        Start an audit
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- Workflow Steps -->
+  <section class="hiw-steps-section" aria-labelledby="hiw-steps-title">
+    <div class="hiw-container">
+      <h2 id="hiw-steps-title" class="hiw-section-title">The 7-step workflow</h2>
+
+      <ol class="hiw-steps" aria-label="End-to-end audit workflow">
+        <li class="hiw-step">
+          <div class="hiw-step-num" aria-hidden="true">1</div>
+          <div class="hiw-step-body">
+            <h3 class="hiw-step-title">🔍 Detect</h3>
+            <p class="hiw-step-desc">Submit any public URL. The backend runs <strong>axe-core</strong> via a headless Playwright browser and returns every WCAG 2.2 violation with its exact DOM selector and HTML snippet.</p>
+          </div>
+        </li>
+
+        <li class="hiw-step">
+          <div class="hiw-step-num" aria-hidden="true">2</div>
+          <div class="hiw-step-body">
+            <h3 class="hiw-step-title">📋 Understand</h3>
+            <p class="hiw-step-desc">Each finding is mapped to its <strong>WCAG 2.2 Success Criterion</strong> (e.g. 1.4.3 Contrast Minimum) with conformance level (A / AA / AAA). Interactive widgets are automatically matched to their <strong>WAI-ARIA APG pattern</strong> (Dialog, Tabs, Combobox…).</p>
+          </div>
+        </li>
+
+        <li class="hiw-step">
+          <div class="hiw-step-num" aria-hidden="true">3</div>
+          <div class="hiw-step-body">
+            <h3 class="hiw-step-title">💡 Propose</h3>
+            <p class="hiw-step-desc">Click <strong>"Propose AI Fix"</strong>. A11yFix generates a contextual HTML diff — using the <em>real</em> DOM snippet from the audit — showing exactly what attribute, role, or style needs to change to be compliant.</p>
+          </div>
+        </li>
+
+        <li class="hiw-step hiw-step--gate">
+          <div class="hiw-step-num hiw-step-num--gate" aria-hidden="true">🔒</div>
+          <div class="hiw-step-body">
+            <h3 class="hiw-step-title">✅ Approve <span class="hiw-gate-badge">Human required</span></h3>
+            <p class="hiw-step-desc">A human engineer reviews the before/after diff and clicks <strong>"Approve"</strong>. This is a mandatory gate — no AI agent can bypass it. Without approval, the apply step is locked at the application state level.</p>
+          </div>
+        </li>
+
+        <li class="hiw-step">
+          <div class="hiw-step-num" aria-hidden="true">5</div>
+          <div class="hiw-step-body">
+            <h3 class="hiw-step-title">🛠️ Fix</h3>
+            <p class="hiw-step-desc">After approval, <strong>"Apply Fix"</strong> executes the <code>apply_remediation</code> WebMCP tool. The fix is applied to the live document and reflected in the application state.</p>
+          </div>
+        </li>
+
+        <li class="hiw-step">
+          <div class="hiw-step-num" aria-hidden="true">6</div>
+          <div class="hiw-step-body">
+            <h3 class="hiw-step-title">🔁 Verify</h3>
+            <p class="hiw-step-desc">A11yFix re-scans the element after the fix to confirm the violation is resolved and the WCAG criterion is now met.</p>
+          </div>
+        </li>
+
+        <li class="hiw-step">
+          <div class="hiw-step-num" aria-hidden="true">7</div>
+          <div class="hiw-step-body">
+            <h3 class="hiw-step-title">🧪 Prevent Regression</h3>
+            <p class="hiw-step-desc">A <strong>Playwright regression test</strong> is auto-generated for every applied fix. Add it to your CI pipeline to ensure the violation never reappears.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Who uses it -->
+  <section class="hiw-audiences-section" aria-labelledby="hiw-audiences-title">
+    <div class="hiw-container">
+      <h2 id="hiw-audiences-title" class="hiw-section-title">Who can use A11yFix?</h2>
+      <p class="hiw-section-subtitle">WebMCP is one channel — not the only one. The same audit engine is accessible through three interfaces.</p>
+
+      <div class="hiw-audience-grid" role="list">
+        <article class="hiw-audience-card" role="listitem">
+          <div class="hiw-audience-icon" aria-hidden="true">🧑‍💼</div>
+          <h3 class="hiw-audience-title">Non-developer</h3>
+          <p class="hiw-audience-role">Designer · PM · QA Analyst</p>
+          <p class="hiw-audience-desc">Uses the web UI directly. No setup required. Submit a URL, browse findings with plain-language severity badges, review the AI diff, and approve fixes — all through the visual interface.</p>
+          <div class="hiw-audience-badge hiw-audience-badge--gui">Web UI only</div>
+        </article>
+
+        <article class="hiw-audience-card" role="listitem">
+          <div class="hiw-audience-icon" aria-hidden="true">👩‍💻</div>
+          <h3 class="hiw-audience-title">Developer</h3>
+          <p class="hiw-audience-role">Accessibility engineer · Frontend dev</p>
+          <p class="hiw-audience-desc">Uses both the web UI and the <strong>WebMCP Console</strong> — invoking tools directly, inspecting WAI-ARIA pattern specs, and reading structured JSON telemetry from every tool execution.</p>
+          <div class="hiw-audience-badge hiw-audience-badge--dev">UI + WebMCP Console</div>
+        </article>
+
+        <article class="hiw-audience-card" role="listitem">
+          <div class="hiw-audience-icon" aria-hidden="true">🤖</div>
+          <h3 class="hiw-audience-title">AI Agent</h3>
+          <p class="hiw-audience-role">Claude · Gemini · Copilot</p>
+          <p class="hiw-audience-desc">The browser calls <code>document.modelContext</code> automatically. The agent reads findings, proposes remediations, and triggers fixes — always stopping at the human approval barrier before any write operation.</p>
+          <div class="hiw-audience-badge hiw-audience-badge--ai">document.modelContext</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Visual Legend & Violation Types Guide (Image Reference) -->
+  <section class="hiw-legend-section" aria-labelledby="hiw-legend-title">
+    <div class="hiw-container">
+      <h2 id="hiw-legend-title" class="hiw-section-title">Visual Violations & Icon Legend</h2>
+      <p class="hiw-section-subtitle">
+        Understand every category of accessibility violations, severity indicators, and WAI-ARIA pattern markers evaluated by A11yFix.
+      </p>
+
+      <div class="hiw-legend-grid">
+        <!-- Errors Category Card -->
+        <div class="hiw-legend-card hiw-legend-card--error">
+          <div class="hiw-legend-header">
+            <span class="hiw-legend-icon-badge hiw-icon--red" aria-hidden="true">🔴</span>
+            <div>
+              <h3 class="hiw-legend-group-title">Critical & Serious Errors</h3>
+              <p class="hiw-legend-group-desc">Severe barriers preventing assistive technology or low-vision users from consuming content.</p>
+            </div>
+          </div>
+
+          <ul class="hiw-legend-items">
+            <li class="hiw-legend-item">
+              <div class="hiw-visual-icon hiw-visual-icon--contrast" title="Contrast Error Icon" aria-hidden="true">
+                <span class="icon-circle-bg"></span>
+                <span class="icon-circle-fg"></span>
+              </div>
+              <div class="hiw-item-details">
+                <div class="hiw-item-title-row">
+                  <strong class="hiw-item-title">Color Contrast (Very low contrast)</strong>
+                  <span class="hiw-rule-tag">SC 1.4.3 · Level AA / AAA</span>
+                </div>
+                <p class="hiw-item-desc">Text contrast ratio is below the required 4.5:1 (normal text) or 3:1 (large text) threshold.</p>
+              </div>
+            </li>
+
+            <li class="hiw-legend-item">
+              <div class="hiw-visual-icon hiw-visual-icon--label" title="Missing Form Label" aria-hidden="true">
+                <span class="icon-tag">Label ✕</span>
+              </div>
+              <div class="hiw-item-details">
+                <div class="hiw-item-title-row">
+                  <strong class="hiw-item-title">Missing Form Label / Name</strong>
+                  <span class="hiw-rule-tag">SC 4.1.2 · Level A</span>
+                </div>
+                <p class="hiw-item-desc">Input or button lacks an accessible name via &lt;label&gt;, aria-label, or aria-labelledby.</p>
+              </div>
+            </li>
+
+            <li class="hiw-legend-item">
+              <div class="hiw-visual-icon hiw-visual-icon--alt" title="Missing Image Alt" aria-hidden="true">
+                <span class="icon-tag">IMG ✕</span>
+              </div>
+              <div class="hiw-item-details">
+                <div class="hiw-item-title-row">
+                  <strong class="hiw-item-title">Missing Image Alternative Text</strong>
+                  <span class="hiw-rule-tag">SC 1.1.1 · Level A</span>
+                </div>
+                <p class="hiw-item-desc">Informative &lt;img&gt; elements without an alt attribute or decorative empty alt="".</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Alerts Category Card -->
+        <div class="hiw-legend-card hiw-legend-card--alert">
+          <div class="hiw-legend-header">
+            <span class="hiw-legend-icon-badge hiw-icon--amber" aria-hidden="true">⚠️</span>
+            <div>
+              <h3 class="hiw-legend-group-title">Alerts & Usability Warnings</h3>
+              <p class="hiw-legend-group-desc">Potential accessibility degradation or suboptimal patterns that should be verified and polished.</p>
+            </div>
+          </div>
+
+          <ul class="hiw-legend-items">
+            <li class="hiw-legend-item">
+              <div class="hiw-visual-icon hiw-visual-icon--smalltext" title="Very small text indicator" aria-hidden="true">
+                <span class="icon-tt">T<sub style="font-size: 8px;">T</sub> ⚠️</span>
+              </div>
+              <div class="hiw-item-details">
+                <div class="hiw-item-title-row">
+                  <strong class="hiw-item-title">Very Small Text</strong>
+                  <span class="hiw-rule-tag">SC 1.4.4 · Level AA</span>
+                </div>
+                <p class="hiw-item-desc">Font size is under 12px or hard to read on mobile screens without zooming.</p>
+              </div>
+            </li>
+
+            <li class="hiw-legend-item">
+              <div class="hiw-visual-icon hiw-visual-icon--title" title="Redundant title text indicator" aria-hidden="true">
+                <span class="icon-doc">📋 ⚠️</span>
+              </div>
+              <div class="hiw-item-details">
+                <div class="hiw-item-title-row">
+                  <strong class="hiw-item-title">Redundant Title Text</strong>
+                  <span class="hiw-rule-tag">Best Practice</span>
+                </div>
+                <p class="hiw-item-desc">The title attribute exactly duplicates the link or button text, causing screen readers to speak twice.</p>
+              </div>
+            </li>
+
+            <li class="hiw-legend-item">
+              <div class="hiw-visual-icon hiw-visual-icon--target" title="Target size indicator" aria-hidden="true">
+                <span class="icon-touch">👆 24px</span>
+              </div>
+              <div class="hiw-item-details">
+                <div class="hiw-item-title-row">
+                  <strong class="hiw-item-title">Touch Target Minimum Size</strong>
+                  <span class="hiw-rule-tag">SC 2.5.8 · Level AA (WCAG 2.2)</span>
+                </div>
+                <p class="hiw-item-desc">Interactive touch target bounding box is under 24×24 CSS pixels with insufficient spacing.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WebMCP Console -->
+  <section class="hiw-console-section" aria-labelledby="hiw-console-title">
+    <div class="hiw-container">
+      <h2 id="hiw-console-title" class="hiw-section-title hiw-section-title--light">WebMCP Console — reading results</h2>
+      <p class="hiw-section-subtitle hiw-section-subtitle--light">The console panel exposes all 8 registered tools with a live structured telemetry feed.</p>
+
+      <div class="hiw-console-steps">
+        <div class="hiw-console-step">
+          <span class="hiw-console-step-num" aria-hidden="true">1</span>
+          <p>Open the app and run a scan to load findings</p>
+        </div>
+        <div class="hiw-console-step">
+          <span class="hiw-console-step-num" aria-hidden="true">2</span>
+          <p>In the right panel, select the <strong>WebMCP Tools</strong> tab</p>
+        </div>
+        <div class="hiw-console-step">
+          <span class="hiw-console-step-num" aria-hidden="true">3</span>
+          <p>Choose a tool card (e.g. <code>propose_remediation</code> or <code>inspect_pattern</code>)</p>
+        </div>
+        <div class="hiw-console-step">
+          <span class="hiw-console-step-num" aria-hidden="true">4</span>
+          <p>Click <strong>Run ➔</strong> and switch to the <strong>Telemetry Log</strong> tab to read the structured JSON output</p>
+        </div>
+      </div>
+
+      <div class="hiw-terminal" aria-label="Example telemetry log output" role="region">
+        <div class="hiw-terminal-bar" aria-hidden="true">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+          <span class="hiw-terminal-title">Telemetry Log</span>
+        </div>
+        <pre class="hiw-terminal-body"><code><span class="log-pill log-success">● SUCCESS</span>  <span class="log-tool">propose_remediation</span>  <span class="log-time">19:42:03</span>
+<span class="log-json">&#123;
+  "findingId": "axe:color-contrast:0",
+  "originalHtml": "&lt;span style=\"color:#aaa\"&gt;Text&lt;/span&gt;",
+  "proposedHtml": "&lt;span style=\"color:#0f172a;background:#fff\"&gt;Text&lt;/span&gt;",
+  "explanation": "WCAG 2.2 SC 1.4.3 — ratio raised from 2.1:1 to 15.3:1 (AAA)"
+&#125;</span>
+
+<span class="log-pill log-denied">● DENIED</span>   <span class="log-tool">apply_remediation</span>   <span class="log-time">19:42:11</span>
+<span class="log-json">&#123; "error": "Human approval required before apply_remediation can execute." &#125;</span></code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="hiw-cta-section" aria-labelledby="hiw-cta-title">
+    <div class="hiw-container hiw-cta-inner">
+      <h2 id="hiw-cta-title" class="hiw-cta-title">Ready to audit your first site?</h2>
+      <p class="hiw-cta-subtitle">It takes 10 seconds. No account needed.</p>
+      <a routerLink="/" class="hiw-cta-btn hiw-cta-btn--large" aria-label="Go to the audit workspace to start a scan">
+        Run your first audit
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+    </div>
+  </section>
+
+</main>

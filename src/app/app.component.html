@@ -16,8 +16,21 @@
             <circle cx="12" cy="12" r="4"/>
           </svg>
         </div>
-        <h1 class="brand-title">A11yFix <span class="brand-badge">QA PRO</span></h1>
+        <a routerLink="/" class="brand-title-link" aria-label="A11yFix — go to audit workspace">
+          <h1 class="brand-title">A11yFix <span class="brand-badge">QA PRO</span></h1>
+        </a>
       </div>
+
+      <nav class="header-nav" aria-label="Main navigation">
+        <a routerLink="/" routerLinkActive="nav-link--active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          Audit Workspace
+        </a>
+        <a routerLink="/how-it-works" routerLinkActive="nav-link--active" class="nav-link">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          Instructions & Guide
+        </a>
+      </nav>
 
       <div class="header-badges">
         <div class="status-pill standard-pill">
@@ -35,29 +48,8 @@
     </div>
   </header>
 
-  <!-- Main Landmark -->
+  <!-- Main Landmark — Router Outlet -->
   <main id="main-content" class="app-main" role="main">
-    <div class="main-container">
-      <!-- Scanner & WebMCP Inspector Bar -->
-      <app-audit-workspace />
-
-      @if (auditFacade.isCompleted()) {
-        @if ((auditFacade.report()?.findings?.length ?? 0) === 0) {
-          <!-- Full-Width 100% WCAG 2.2 Compliance Pass Report -->
-          <app-compliance-success />
-        } @else {
-          <!-- Split Workspace: Findings List + Finding Detail -->
-          <div class="workspace-grid">
-            <aside class="grid-col findings-col" aria-label="Findings Navigation">
-              <app-findings-list />
-            </aside>
-
-            <section class="grid-col detail-col" aria-label="Finding Inspection and Remediation">
-              <app-finding-detail />
-            </section>
-          </div>
-        }
-      }
-    </div>
+    <router-outlet />
   </main>
 </div>
