@@ -50,8 +50,14 @@ export class AuditDtoMapper {
         ? rawSeverity
         : 'serious';
 
-    const normalizedPattern = this.normalizePatternType(dto.patternType);
     const ruleId = dto.ruleId || 'pattern:dialog-accessible-name';
+
+    const normalizedPattern = this.inferPatternType(
+      dto.patternType,
+      ruleId,
+      typeof dto.targetSelector === 'string' ? dto.targetSelector : dto.targetSelector?.cssSelector,
+      dto.htmlSnippet
+    );
 
     const directWcag = dto.wcagCriterionId || dto.wcagId || dto.criterion;
     const wcagCriterionId = directWcag
@@ -63,15 +69,15 @@ export class AuditDtoMapper {
       WCAG_22_CATALOG[wcagCriterionId] ??
       WCAG_22_CATALOG['4.1.2'];
 
-    let selector = 'unknown-element';
-    if (typeof dto.targetSelector === 'string') {
-      selector = dto.targetSelector;
-    } else if (dto.targetSelector && typeof dto.targetSelector === 'object') {
+    let selector = 'element';
+    if (dto.targetSelector && typeof dto.targetSelector === 'object') {
       selector =
         dto.targetSelector.cssSelector ||
         (dto.targetSelector.role ? `[role="${dto.targetSelector.role}"]` : 'element');
     } else if (dto.selector) {
       selector = dto.selector;
+    } else if (typeof dto.targetSelector === 'string') {
+      selector = dto.targetSelector;
     }
 
     return {
@@ -87,19 +93,29 @@ export class AuditDtoMapper {
     };
   }
 
-  static normalizePatternType(patternType?: string): PatternType | undefined {
-    if (!patternType) return undefined;
-    const lower = patternType.toLowerCase();
-    if (lower.includes('alert_dialog') || lower.includes('alertdialog')) return 'alert_dialog';
-    if (lower.includes('dialog')) return 'dialog';
-    if (lower.includes('tab')) return 'tabs';
-    if (lower.includes('disclosure')) return 'disclosure';
-    if (lower.includes('combobox')) return 'combobox';
-    if (lower.includes('menu_button') || lower.includes('menubutton')) return 'menu_button';
-    if (lower.includes('breadcrumb')) return 'breadcrumb';
-    if (lower.includes('tooltip')) return 'tooltip';
-    if (lower.includes('accordion')) return 'accordion';
+  static inferPatternType(
+    patternType?: string,
+    ruleId?: string,
+    selector?: string,
+    htmlSnippet?: string
+  ): PatternType | undefined {
+    const raw = `${patternType || ''} ${ruleId || ''} ${selector || ''} ${htmlSnippet || ''}`.toLowerCase();
+    if (!raw.trim()) return undefined;
+
+    if (raw.includes('alert_dialog') || raw.includes('alertdialog')) return 'alert_dialog';
+    if (raw.includes('dialog') || raw.includes('modal') || raw.includes('aria-modal') || raw.includes('focus-trap')) return 'dialog';
+    if (raw.includes('tablist') || raw.includes('role="tab"') || raw.includes('tabpanel') || raw.includes('tabs')) return 'tabs';
+    if (raw.includes('accordion')) return 'accordion';
+    if (raw.includes('disclosure') || raw.includes('aria-expanded') || raw.includes('<details') || raw.includes('<summary')) return 'disclosure';
+    if (raw.includes('combobox') || raw.includes('autocomplete') || raw.includes('listbox')) return 'combobox';
+    if (raw.includes('menu_button') || raw.includes('menubutton') || raw.includes('role="menu"')) return 'menu_button';
+    if (raw.includes('breadcrumb') || raw.includes('aria-label="breadcrumb"')) return 'breadcrumb';
+    if (raw.includes('tooltip') || raw.includes('role="tooltip"')) return 'tooltip';
     return undefined;
+  }
+
+  static normalizePatternType(patternType?: string): PatternType | undefined {
+    return this.inferPatternType(patternType);
   }
 
   static resolveWcagCriterionId(ruleId: string, pattern?: PatternType): string {
