@@ -113,12 +113,7 @@ export class HttpAuditApiClient implements AuditApiClient {
             catchError(() => of([])),
             map((findingsRaw) => {
               const findingsList = extractFindingsArray(findingsRaw);
-              let domainFindings: Finding[] = [];
-              if (findingsList.length > 0) {
-                domainFindings = findingsList.map((dto) => this.mapFindingDtoToDomain(dto));
-              } else {
-                domainFindings = this.getFallbackPatternFindings(auditId);
-              }
+              const domainFindings = findingsList.map((dto) => this.mapFindingDtoToDomain(dto));
               return this.normalizeAuditReport(createdAudit, domainFindings);
             })
           );
@@ -149,10 +144,7 @@ export class HttpAuditApiClient implements AuditApiClient {
     }).pipe(
       map(({ audit, findingsRaw }) => {
         const findingsList = extractFindingsArray(findingsRaw);
-        const domainFindings =
-          findingsList.length > 0
-            ? findingsList.map((dto) => this.mapFindingDtoToDomain(dto))
-            : this.getFallbackPatternFindings(auditId);
+        const domainFindings = findingsList.map((dto) => this.mapFindingDtoToDomain(dto));
         return this.normalizeAuditReport(audit, domainFindings);
       })
     );
