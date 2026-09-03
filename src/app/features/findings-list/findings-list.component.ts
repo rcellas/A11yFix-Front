@@ -1,13 +1,13 @@
 import { UpperCasePipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
-import { BadgeComponent, CardComponent, FilterChipGroupComponent, FilterOption, TextFieldComponent } from '../../components';
+import { BadgeComponent, FilterChipGroupComponent, FilterOption, TextFieldComponent } from '../../components';
 import { AuditFacade } from '../../core/facades/audit.facade';
 import { Finding, FindingSeverity, WcagLevel } from '../../core/models';
 
 @Component({
   selector: 'app-findings-list',
   standalone: true,
-  imports: [CardComponent, BadgeComponent, FilterChipGroupComponent, TextFieldComponent, UpperCasePipe],
+  imports: [BadgeComponent, FilterChipGroupComponent, TextFieldComponent, UpperCasePipe],
   templateUrl: './findings-list.component.html',
   styleUrl: './findings-list.component.css'
 })

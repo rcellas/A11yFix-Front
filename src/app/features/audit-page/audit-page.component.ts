@@ -48,13 +48,25 @@ import { FindingsListComponent } from '../findings-list/findings-list.component'
     }
     .workspace-grid {
       display: grid;
-      grid-template-columns: 360px 1fr;
+      grid-template-columns: minmax(380px, 440px) 1fr;
       gap: 1.5rem;
       align-items: start;
     }
     .grid-col { min-width: 0; }
-    @media (max-width: 900px) {
+    .findings-col {
+      position: sticky;
+      top: 80px;
+      max-height: calc(100vh - 110px);
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+    }
+    @media (max-width: 960px) {
       .workspace-grid { grid-template-columns: 1fr; }
+      .findings-col {
+        position: static;
+        max-height: none;
+      }
     }
   `]
 })
