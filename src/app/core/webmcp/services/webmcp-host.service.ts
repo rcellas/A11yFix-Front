@@ -1,6 +1,17 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { WEBMCP_TOOLS, WebMcpTool } from '../contracts/webmcp-tool.interface';
-import { ModelContext, ToolDeclaration } from '../contracts/webmcp.types';
+import { ModelContext, ToolDeclaration, WebMcpPermissionTier } from '../contracts/webmcp.types';
+
+export interface WebMcpExecutionLog {
+  readonly id: string;
+  readonly toolName: string;
+  readonly tier: WebMcpPermissionTier;
+  readonly timestamp: string;
+  readonly input: unknown;
+  readonly output?: unknown;
+  readonly error?: string;
+  readonly status: 'success' | 'failed' | 'denied';
+}
 
 export interface GlobalWebMcpApi {
   listTools: () => readonly ToolDeclaration[];
@@ -22,18 +33,65 @@ export class WebMcpHostService {
 
   readonly isSupported = signal<boolean>(true);
   readonly registeredToolNames = signal<string[]>([]);
+  readonly executionLogs = signal<WebMcpExecutionLog[]>([]);
+  readonly isPanelOpen = signal<boolean>(false);
+
+  togglePanel(): void {
+    this.isPanelOpen.update((open) => !open);
+  }
+
+  getToolsList(): readonly WebMcpTool[] {
+    return this.tools;
+  }
+
+  async executeToolDirect(name: string, args: Record<string, unknown> = {}): Promise<unknown> {
+    const tool = this.tools.find((t) => t.name === name);
+    if (!tool) {
+      throw new Error(`Tool ${name} not found`);
+    }
+
+    const logId = `log-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    const timestamp = new Date().toLocaleTimeString();
+
+    try {
+      const result = await tool.execute(args);
+      this.addLog({
+        id: logId,
+        toolName: tool.name,
+        tier: tool.tier,
+        timestamp,
+        input: args,
+        output: result,
+        status: 'success'
+      });
+      return result;
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      const isSecurityDenied =
+        errorMsg.includes('Human Approval') || errorMsg.includes('Security Policy');
+
+      this.addLog({
+        id: logId,
+        toolName: tool.name,
+        tier: tool.tier,
+        timestamp,
+        input: args,
+        error: errorMsg,
+        status: isSecurityDenied ? 'denied' : 'failed'
+      });
+      throw err;
+    }
+  }
 
   initialize(): void {
-    const registeredToolsMap = new Map<string, WebMcpTool>();
     const toolDeclarations: ToolDeclaration[] = [];
 
     for (const tool of this.tools) {
-      registeredToolsMap.set(tool.name, tool);
       toolDeclarations.push({
         name: tool.name,
         description: tool.description,
         parameters: tool.parameters,
-        execute: (args: Record<string, unknown>) => tool.execute(args)
+        execute: (args: Record<string, unknown>) => this.executeToolDirect(tool.name, args)
       });
     }
 
@@ -41,7 +99,10 @@ export class WebMcpHostService {
     let context: ModelContext | undefined;
     if (typeof document !== 'undefined' && document.modelContext) {
       context = document.modelContext;
-    } else if (typeof navigator !== 'undefined' && (navigator as unknown as { modelContext?: ModelContext }).modelContext) {
+    } else if (
+      typeof navigator !== 'undefined' &&
+      (navigator as unknown as { modelContext?: ModelContext }).modelContext
+    ) {
       context = (navigator as unknown as { modelContext?: ModelContext }).modelContext;
     } else if (typeof window !== 'undefined' && window.modelContext) {
       context = window.modelContext;
@@ -81,13 +142,8 @@ export class WebMcpHostService {
     if (typeof window !== 'undefined') {
       window.a11yfixWebMcp = {
         listTools: () => toolDeclarations,
-        executeTool: async (name: string, args: Record<string, unknown> = {}) => {
-          const tool = registeredToolsMap.get(name);
-          if (!tool) {
-            throw new Error(`WebMCP Tool "${name}" is not registered.`);
-          }
-          return tool.execute(args);
-        }
+        executeTool: (name: string, args: Record<string, unknown> = {}) =>
+          this.executeToolDirect(name, args)
       };
     }
 
@@ -98,5 +154,9 @@ export class WebMcpHostService {
       `[WebMCP Host] Successfully registered ${registered.length} client tools:`,
       registered.join(', ')
     );
+  }
+
+  private addLog(log: WebMcpExecutionLog): void {
+    this.executionLogs.update((logs) => [log, ...logs.slice(0, 49)]);
   }
 }
