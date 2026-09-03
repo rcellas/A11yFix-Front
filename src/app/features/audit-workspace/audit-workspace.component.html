@@ -35,7 +35,7 @@
         type="url"
         [value]="urlInput()"
         [errorMessage]="errorMessage() || auditFacade.error() || ''"
-        [disabled]="auditFacade.isScanning()"
+        [disabled]="auditFacade.isScanning() || isRunningAllIn()"
         [required]="true"
         (valueChange)="onUrlChange($event)"
       />
@@ -46,7 +46,7 @@
         variant="primary"
         size="md"
         type="submit"
-        [disabled]="auditFacade.isScanning()"
+        [disabled]="auditFacade.isScanning() || isRunningAllIn()"
         ariaLabel="Run accessibility audit scan"
       >
         @if (auditFacade.isScanning()) {
@@ -79,7 +79,7 @@
             [attr.aria-selected]="selectedWebMcpSubTab() === 'tools'"
             (click)="selectedWebMcpSubTab.set('tools')"
           >
-            🛠️ Client Tools ({{ tools.length }})
+            <span>🛠️ Client Tools ({{ tools.length }})</span>
           </button>
           <button
             role="tab"
@@ -88,7 +88,7 @@
             [attr.aria-selected]="selectedWebMcpSubTab() === 'logs'"
             (click)="selectedWebMcpSubTab.set('logs')"
           >
-            📋 Live Telemetry Logs ({{ logs.length }})
+            <span>📋 Live Telemetry Logs ({{ logs.length }})</span>
           </button>
         </div>
 
@@ -98,8 +98,38 @@
         </div>
       </div>
 
-      <!-- Subtab: Tools Catalog with Multi-Options -->
+      <!-- Subtab: Tools Catalog with All-in-One and Multi-Options -->
       @if (selectedWebMcpSubTab() === 'tools') {
+        <!-- All-in-One Autonomous QA Pipeline Banner -->
+        <div class="all-in-banner">
+          <div class="all-in-info">
+            <h3 class="all-in-title">🚀 All-in-One Autonomous QA Pipeline</h3>
+            <p class="all-in-desc">
+              Execute full agent workflow with 1 click: <code>create_audit</code> ➔ <code>get_findings</code> ➔ <code>propose_remediation</code> ➔ <code>generate_regression_test</code>.
+            </p>
+            @if (allInStatusMessage(); as status) {
+              <div class="all-in-status" role="status">
+                <span class="pulse-dot"></span>
+                <span>{{ status }}</span>
+              </div>
+            }
+          </div>
+          <app-button
+            variant="primary"
+            size="md"
+            [disabled]="isRunningAllIn() || auditFacade.isScanning()"
+            [loading]="isRunningAllIn()"
+            (clicked)="runAllInPipeline()"
+            ariaLabel="Run full autonomous QA pipeline all in one"
+          >
+            @if (isRunningAllIn()) {
+              Running Pipeline...
+            } @else {
+              ⚡ Run Full All-In Pipeline
+            }
+          </app-button>
+        </div>
+
         <!-- Interactive Multi-Options Bar -->
         <div class="tool-options-bar">
           <div class="option-item">
@@ -177,7 +207,7 @@
               </div>
             } @empty {
               <div class="empty-logs">
-                <p>No WebMCP executions yet. Click "Run Tool" on any tool to trigger live telemetry.</p>
+                <p>No WebMCP executions yet. Click "Run Tool" or "Run Full All-In Pipeline" to see live telemetry.</p>
               </div>
             }
           </div>

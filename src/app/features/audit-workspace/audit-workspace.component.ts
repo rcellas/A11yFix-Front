@@ -3,7 +3,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BadgeComponent, ButtonComponent, CardComponent, TextFieldComponent } from '../../components';
 import { AuditFacade } from '../../core/facades/audit.facade';
-import { FindingSeverity, PatternType } from '../../core/models';
+import { PatternType } from '../../core/models';
 import { WebMcpHostService } from '../../core/webmcp/services/webmcp-host.service';
 
 @Component({
@@ -28,6 +28,10 @@ export class AuditWorkspaceComponent {
   readonly showWebMcpPanel = signal<boolean>(false);
   readonly selectedWebMcpSubTab = signal<'tools' | 'logs'>('tools');
   readonly lastExecutionResult = signal<string | null>(null);
+
+  // All-in-one execution state
+  readonly isRunningAllIn = signal<boolean>(false);
+  readonly allInStatusMessage = signal<string | null>(null);
 
   // Custom tool options
   readonly selectedSeverityFilter = signal<string>('all');
@@ -75,6 +79,56 @@ export class AuditWorkspaceComponent {
     await this.auditFacade.runScan(url);
   }
 
+  async runAllInPipeline(): Promise<void> {
+    this.isRunningAllIn.set(true);
+    this.lastExecutionResult.set(null);
+    const urlToScan = this.urlInput().trim() || 'https://example.com';
+
+    try {
+      // 1. Create audit
+      this.allInStatusMessage.set('1/4: Running create_audit across target site...');
+      await this.webMcpHost.executeToolDirect('create_audit', { url: urlToScan });
+
+      // 2. Fetch findings
+      this.allInStatusMessage.set('2/4: Executing get_findings (filtering WCAG 2.2 violations)...');
+      await this.webMcpHost.executeToolDirect('get_findings', {});
+
+      // 3. Propose AI remediation for top finding
+      const report = this.auditFacade.report();
+      const firstFinding = report?.findings[0];
+      if (firstFinding) {
+        this.allInStatusMessage.set(`3/4: Proposing AI remediation for ${firstFinding.ruleId}...`);
+        await this.webMcpHost.executeToolDirect('propose_remediation', { findingId: firstFinding.id });
+
+        // 4. Generate Playwright regression test
+        this.allInStatusMessage.set('4/4: Generating Playwright regression test suite...');
+        await this.webMcpHost.executeToolDirect('generate_regression_test', { findingId: firstFinding.id });
+      }
+
+      this.lastExecutionResult.set(
+        JSON.stringify(
+          {
+            status: 'ALL_IN_PIPELINE_COMPLETE',
+            message: 'Full autonomous QA pipeline executed successfully.',
+            targetUrl: urlToScan,
+            totalFindings: report?.findings.length ?? 0,
+            nextStep: 'Human approval required in workspace to apply remediation code.'
+          },
+          null,
+          2
+        )
+      );
+      this.selectedWebMcpSubTab.set('logs');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.lastExecutionResult.set(`Error during All-In pipeline: ${msg}`);
+      this.selectedWebMcpSubTab.set('logs');
+    } finally {
+      this.isRunningAllIn.set(false);
+      this.allInStatusMessage.set(null);
+    }
+  }
+
   async runQuickTool(toolName: string): Promise<void> {
     this.lastExecutionResult.set(null);
     try {
@@ -85,7 +139,6 @@ export class AuditWorkspaceComponent {
       const currentFindingId = currentFinding ? currentFinding.id : undefined;
 
       if (toolName === 'create_audit') {
-        // Runs a full website audit for the entire URL
         const urlToScan = this.urlInput().trim() || 'https://example.com';
         args = { url: urlToScan };
       } else if (toolName === 'get_audit') {
