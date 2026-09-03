@@ -119,7 +119,7 @@
 
 .workspace-grid {
   display: grid;
-  grid-template-columns: minmax(360px, 480px) 1fr;
+  grid-template-columns: minmax(380px, 490px) 1fr;
   gap: var(--space-6);
   align-items: start;
 }
@@ -134,16 +134,26 @@
   top: 90px;
   max-height: calc(100vh - 120px);
   overflow-y: auto;
-  padding-right: var(--space-2);
+  overflow-x: hidden;
+  padding-right: var(--space-4, 1rem);
+  box-sizing: border-box;
 }
 
 .findings-col::-webkit-scrollbar {
   width: 6px;
 }
 
+.findings-col::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 .findings-col::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 999px;
+}
+
+.findings-col::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 .detail-col {
