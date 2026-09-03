@@ -6,13 +6,31 @@
   <header class="app-header" role="banner">
     <div class="header-content">
       <div class="brand-group">
-        <span class="brand-icon" aria-hidden="true">⚡</span>
-        <h1 class="brand-title">A11yFix <span class="brand-subtitle">Web QA Workbench</span></h1>
+        <div class="brand-logo-mark" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="m4.93 4.93 4.24 4.24"/>
+            <path d="m14.83 9.17 4.24-4.24"/>
+            <path d="m14.83 14.83 4.24 4.24"/>
+            <path d="m9.17 14.83-4.24 4.24"/>
+            <circle cx="12" cy="12" r="4"/>
+          </svg>
+        </div>
+        <h1 class="brand-title">A11yFix <span class="brand-badge">QA PRO</span></h1>
       </div>
 
       <div class="header-badges">
-        <app-badge variant="info">WCAG 2.2 Level AA Standard</app-badge>
-        <app-badge variant="success">⚡ WebMCP Host Active ({{ webMcpHost.registeredToolNames().length }} Tools)</app-badge>
+        <div class="status-pill standard-pill">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 6 9 17l-5-5"/>
+          </svg>
+          <span>WCAG 2.2 AA</span>
+        </div>
+
+        <div class="status-pill webmcp-pill">
+          <span class="live-dot" aria-hidden="true"></span>
+          <span>WebMCP Host Active ({{ webMcpHost.registeredToolNames().length }} Tools)</span>
+        </div>
       </div>
     </div>
   </header>

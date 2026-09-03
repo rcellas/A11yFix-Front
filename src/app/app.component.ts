@@ -1,5 +1,4 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { BadgeComponent } from './components';
 import { AuditFacade } from './core/facades/audit.facade';
 import { WebMcpHostService } from './core/webmcp';
 import { AuditWorkspaceComponent } from './features/audit-workspace/audit-workspace.component';
@@ -11,7 +10,6 @@ import { FindingsListComponent } from './features/findings-list/findings-list.co
   selector: 'app-root',
   standalone: true,
   imports: [
-    BadgeComponent,
     AuditWorkspaceComponent,
     FindingsListComponent,
     FindingDetailComponent,
