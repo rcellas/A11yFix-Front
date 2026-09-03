@@ -105,16 +105,17 @@
 }
 
 .standard-pill {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  color: #334155;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+  font-weight: 600;
 }
 
 .webmcp-pill {
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  color: #15803d;
-  font-weight: 600;
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  color: #14532d;
+  font-weight: 700;
 }
 
 .live-dot {

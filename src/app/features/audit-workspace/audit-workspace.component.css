@@ -222,33 +222,36 @@
 .host-status-tag {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
   font-size: 0.75rem;
-  color: #15803d;
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  padding: 0.25rem 0.6rem;
+  color: #14532d;
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  padding: 0.3rem 0.75rem;
   border-radius: 9999px;
-  font-weight: 500;
+  font-weight: 700;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .live-dot-sm {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: #22c55e;
+  background: #16a34a;
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.25);
 }
 
 .clear-logs-header-btn {
-  background: transparent;
-  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
   border-radius: 6px;
-  padding: 0.25rem 0.65rem;
+  padding: 0.3rem 0.75rem;
   font-size: 0.75rem;
-  font-weight: 500;
-  color: #64748b;
+  font-weight: 600;
+  color: #334155;
   cursor: pointer;
   transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 .clear-logs-header-btn:hover {
@@ -258,20 +261,22 @@
 }
 
 .close-console-btn {
-  background: transparent;
-  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
   border-radius: 6px;
-  padding: 0.25rem 0.65rem;
+  padding: 0.3rem 0.75rem;
   font-size: 0.75rem;
-  font-weight: 500;
-  color: #64748b;
+  font-weight: 600;
+  color: #0f172a;
   cursor: pointer;
   transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 .close-console-btn:hover {
-  background: #f1f5f9;
-  color: #0f172a;
+  background: #fee2e2;
+  color: #991b1b;
+  border-color: #fca5a5;
 }
 
 /* All-In Pipeline Banner - Developer Console Look */
@@ -405,15 +410,15 @@
 
 .option-label {
   font-size: 0.75rem;
-  font-weight: 600;
-  color: #475569;
+  font-weight: 700;
+  color: #0f172a;
 }
 
 .option-select {
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
   padding: 0.35rem 0.65rem;
-  border: 1px solid #cbd5e1;
+  border: 1px solid #94a3b8;
   border-radius: 6px;
   background: #ffffff;
   color: #0f172a;
@@ -423,7 +428,7 @@
 }
 
 .option-select:focus {
-  border-color: #4f46e5;
+  border-color: #4338ca;
 }
 
 /* Tool Cards Grid */
@@ -439,14 +444,14 @@
   gap: 0.5rem;
   padding: 1rem;
   background: #ffffff;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #cbd5e1;
   border-radius: 8px;
   transition: all 0.15s ease;
 }
 
 .tool-item-card:hover {
-  border-color: #cbd5e1;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  border-color: #4338ca;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
 .tool-top {
@@ -464,7 +469,7 @@
 
 .tool-code {
   font-family: var(--font-mono);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.8125rem;
   color: #0f172a;
 }
@@ -480,32 +485,32 @@
 
 .tier-read {
   background: #f1f5f9;
-  color: #475569;
-  border: 1px solid #e2e8f0;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
 }
 
 .tier-propose {
   background: #fef3c7;
-  color: #92400e;
-  border: 1px solid #fde68a;
+  color: #78350f;
+  border: 1px solid #f59e0b;
 }
 
 .tier-write {
   background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fca5a5;
+  color: #7f1d1d;
+  border: 1px solid #ef4444;
 }
 
 .tool-run-btn {
   display: inline-flex;
   align-items: center;
   padding: 0.25rem 0.65rem;
-  background: #f8fafc;
-  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  border: 1px solid #94a3b8;
   border-radius: 6px;
   font-size: 0.75rem;
-  font-weight: 600;
-  color: #334155;
+  font-weight: 700;
+  color: #0f172a;
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -519,7 +524,7 @@
 .tool-summary {
   margin: 0;
   font-size: 0.75rem;
-  color: #64748b;
+  color: #334155;
   line-height: 1.45;
 }
 
