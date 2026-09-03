@@ -1,13 +1,13 @@
 # ♿ A11yFix Web — Agent-Native Accessibility QA & WebMCP Host
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Angular 21](https://img.shields.io/badge/Framework-Angular_21_Standalone-DD0031.svg?logo=angular)](https://angular.dev)
+[![Angular 22](https://img.shields.io/badge/Angular-22-DD0031.svg?logo=angular)](https://angular.dev)
 [![State](https://img.shields.io/badge/Reactivity-Angular_Signals-38bdf8.svg)](https://angular.dev/guide/signals)
 [![WCAG 2.2](https://img.shields.io/badge/Accessibility-WCAG_2.2_Level_AAA-16a34a.svg)](https://www.w3.org/WAI/WCAG22/)
 [![WebMCP](https://img.shields.io/badge/Protocol-WebMCP_Browser--Native-6366f1.svg)](https://github.com/modelcontextprotocol)
 [![Testing](https://img.shields.io/badge/Tests-67_Passed_%7C_Vitest-4ade80.svg)](https://vitest.dev)
 
-> **A11yFix** is an agent-native, browser-hosted accessibility QA application built with **Angular 21**, **Angular Signals**, and **WebMCP** (`document.modelContext`). It provides an autonomous end-to-end accessibility workflow: **Detect $\rightarrow$ Understand $\rightarrow$ Propose $\rightarrow$ Approve $\rightarrow$ Fix $\rightarrow$ Verify $\rightarrow$ Prevent Regression**.
+> **A11yFix** is an agent-native, browser-hosted accessibility QA application built with **Angular 22**, **Angular Signals**, and **WebMCP** (`document.modelContext`). It provides an autonomous end-to-end accessibility workflow: **Detect $\rightarrow$ Understand $\rightarrow$ Propose $\rightarrow$ Approve $\rightarrow$ Fix $\rightarrow$ Verify $\rightarrow$ Prevent Regression**.
 
 ---
 
