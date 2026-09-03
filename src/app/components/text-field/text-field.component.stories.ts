@@ -35,9 +35,9 @@ type Story = StoryObj<TextFieldArgs>;
 
 export const Default: Story = {
   args: {
-    label: 'URL de Auditoría',
-    placeholder: 'https://ejemplo.com',
-    helperText: 'Introduce la URL pública que deseas auditar.',
+    label: 'Target Website URL',
+    placeholder: 'https://example.com',
+    helperText: 'Enter a valid public URL to perform WCAG 2.2 accessibility QA scan.',
     required: true,
     type: 'url'
   }
@@ -45,9 +45,9 @@ export const Default: Story = {
 
 export const WithError: Story = {
   args: {
-    label: 'URL de Auditoría',
-    placeholder: 'https://ejemplo.com',
-    errorMessage: 'La URL debe comenzar con https:// y ser accesible públicamente.',
+    label: 'Target Website URL',
+    placeholder: 'https://example.com',
+    errorMessage: 'Please enter a valid absolute URL starting with https://',
     required: true,
     type: 'url'
   }
@@ -55,9 +55,9 @@ export const WithError: Story = {
 
 export const Disabled: Story = {
   args: {
-    label: 'Selector CSS del elemento',
-    placeholder: 'div.main-header button',
+    label: 'Target CSS Selector',
+    placeholder: 'button.nav-icon[aria-label]',
     disabled: true,
-    helperText: 'Campo deshabilitado mientras se procesa la auditoría.'
+    helperText: 'Disabled during automated scanning.'
   }
 };

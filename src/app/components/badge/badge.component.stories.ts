@@ -52,6 +52,18 @@ export const WcagLevelAA: Story = {
   })
 };
 
+export const WcagLevelAAA: Story = {
+  args: {
+    variant: 'wcag-aaa',
+    size: 'md',
+    dot: true
+  },
+  render: (args) => ({
+    props: args,
+    template: `<app-badge [variant]="variant" [size]="size" [dot]="dot">WCAG 2.2 Level AAA</app-badge>`
+  })
+};
+
 export const SeverityCritical: Story = {
   args: {
     variant: 'critical',
@@ -60,7 +72,7 @@ export const SeverityCritical: Story = {
   },
   render: (args) => ({
     props: args,
-    template: `<app-badge [variant]="variant" [size]="size" [dot]="dot">Crítica</app-badge>`
+    template: `<app-badge [variant]="variant" [size]="size" [dot]="dot">CRITICAL</app-badge>`
   })
 };
 
@@ -72,7 +84,31 @@ export const SeveritySerious: Story = {
   },
   render: (args) => ({
     props: args,
-    template: `<app-badge [variant]="variant" [size]="size" [dot]="dot">Grave</app-badge>`
+    template: `<app-badge [variant]="variant" [size]="size" [dot]="dot">SERIOUS</app-badge>`
+  })
+};
+
+export const SeverityModerate: Story = {
+  args: {
+    variant: 'moderate',
+    size: 'md',
+    dot: true
+  },
+  render: (args) => ({
+    props: args,
+    template: `<app-badge [variant]="variant" [size]="size" [dot]="dot">MODERATE</app-badge>`
+  })
+};
+
+export const SeverityMinor: Story = {
+  args: {
+    variant: 'minor',
+    size: 'md',
+    dot: true
+  },
+  render: (args) => ({
+    props: args,
+    template: `<app-badge [variant]="variant" [size]="size" [dot]="dot">MINOR</app-badge>`
   })
 };
 
@@ -83,6 +119,6 @@ export const StatusSuccess: Story = {
   },
   render: (args) => ({
     props: args,
-    template: `<app-badge [variant]="variant" [size]="size">Verificado</app-badge>`
+    template: `<app-badge [variant]="variant" [size]="size">VERIFIED</app-badge>`
   })
 };

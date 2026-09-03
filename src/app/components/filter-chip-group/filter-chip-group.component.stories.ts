@@ -19,25 +19,25 @@ type Story = StoryObj<FilterChipGroupArgs>;
 
 export const WcagLevelFilters: Story = {
   args: {
-    ariaLabel: 'Filtrar por nivel de conformidad WCAG 2.2',
+    ariaLabel: 'Filter by WCAG 2.2 Conformance Level',
     multiSelect: true,
     options: [
-      { id: 'wcag-a', label: 'Nivel A', count: 4, badgeVariant: 'wcag-a' },
-      { id: 'wcag-aa', label: 'Nivel AA', count: 9, badgeVariant: 'wcag-aa' },
-      { id: 'wcag-aaa', label: 'Nivel AAA', count: 2, badgeVariant: 'wcag-aaa' }
+      { id: 'wcag-a', label: 'Level A', count: 4, badgeVariant: 'wcag-a' },
+      { id: 'wcag-aa', label: 'Level AA', count: 9, badgeVariant: 'wcag-aa' },
+      { id: 'wcag-aaa', label: 'Level AAA', count: 2, badgeVariant: 'wcag-aaa' }
     ]
   }
 };
 
 export const SeverityFilters: Story = {
   args: {
-    ariaLabel: 'Filtrar por severidad de hallazgo',
+    ariaLabel: 'Filter by finding severity',
     multiSelect: true,
     options: [
-      { id: 'critical', label: 'Crítica', count: 3, badgeVariant: 'critical' },
-      { id: 'serious', label: 'Grave', count: 5, badgeVariant: 'serious' },
-      { id: 'moderate', label: 'Moderada', count: 4, badgeVariant: 'moderate' },
-      { id: 'minor', label: 'Menor', count: 3, badgeVariant: 'minor' }
+      { id: 'critical', label: 'Critical', count: 3, badgeVariant: 'critical' },
+      { id: 'serious', label: 'Serious', count: 5, badgeVariant: 'serious' },
+      { id: 'moderate', label: 'Moderate', count: 4, badgeVariant: 'moderate' },
+      { id: 'minor', label: 'Minor', count: 3, badgeVariant: 'minor' }
     ]
   }
 };

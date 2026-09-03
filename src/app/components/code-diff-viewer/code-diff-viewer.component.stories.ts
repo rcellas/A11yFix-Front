@@ -33,3 +33,24 @@ export const DialogRemediation: Story = {
     diffText: sampleDiff
   }
 };
+
+export const ColorContrastRemediation: Story = {
+  args: {
+    filename: 'badge.component.html',
+    diffText: `- <span data-cs-mask="true" class="sc-badge" style="color: #d8d8d8; background: #ffffff;">Lanzamiento</span>\n+ <span data-cs-mask="true" class="sc-badge" style="color: #0f172a; background: #ffffff;">Lanzamiento</span>`
+  }
+};
+
+export const LandmarkRemediation: Story = {
+  args: {
+    filename: 'app.component.html',
+    diffText: `- <div class="main-content-wrapper">\n-   <section id="workspace-section">\n+ <main id="main-content" role="main" class="main-content-wrapper">\n+   <section id="workspace-section">`
+  }
+};
+
+export const TouchTargetRemediation: Story = {
+  args: {
+    filename: 'icon-button.component.html',
+    diffText: `- <button class="nav-icon" style="width: 18px; height: 18px;">\n-   <svg>...</svg>\n- </button>\n+ <button class="nav-icon" style="min-width: 24px; min-height: 24px; padding: 4px;" aria-label="Open navigation">\n+   <svg aria-hidden="true">...</svg>\n+ </button>`
+  }
+};

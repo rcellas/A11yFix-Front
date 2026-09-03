@@ -38,7 +38,7 @@ export const Primary: Story = {
   },
   render: (args) => ({
     props: args,
-    template: `<app-button [variant]="variant" [size]="size">Iniciar Auditoría</app-button>`
+    template: `<app-button [variant]="variant" [size]="size">Audit Target →</app-button>`
   })
 };
 
@@ -49,7 +49,7 @@ export const Secondary: Story = {
   },
   render: (args) => ({
     props: args,
-    template: `<app-button [variant]="variant" [size]="size">Inspeccionar Código</app-button>`
+    template: `<app-button [variant]="variant" [size]="size">Inspect Code</app-button>`
   })
 };
 
@@ -60,7 +60,7 @@ export const Danger: Story = {
   },
   render: (args) => ({
     props: args,
-    template: `<app-button [variant]="variant" [size]="size">Descartar Hallazgo</app-button>`
+    template: `<app-button [variant]="variant" [size]="size">Reject Proposal</app-button>`
   })
 };
 
@@ -72,6 +72,6 @@ export const Loading: Story = {
   },
   render: (args) => ({
     props: args,
-    template: `<app-button [variant]="variant" [size]="size" [loading]="loading">Analizando DOM...</app-button>`
+    template: `<app-button [variant]="variant" [size]="size" [loading]="loading">Scanning DOM...</app-button>`
   })
 };
