@@ -30,24 +30,29 @@ export interface BackendAuditDto {
   readonly createdAt?: string;
   readonly timestamp?: string;
   readonly findings?: readonly Finding[];
-  readonly summary?: any;
+  readonly summary?: unknown;
 }
 
 export interface BackendFindingDto {
   readonly id: string;
   readonly auditId?: string;
   readonly patternType?: string;
-  readonly ruleId: string;
-  readonly severity: string;
-  readonly message: string;
+  readonly ruleId?: string;
+  readonly severity?: string;
+  readonly message?: string;
   readonly helpUrl?: string;
-  readonly targetSelector?: {
-    readonly cssSelector?: string;
-    readonly role?: string;
-  };
+  readonly targetSelector?:
+    | {
+        readonly cssSelector?: string;
+        readonly role?: string;
+      }
+    | string;
   readonly selector?: string;
   readonly htmlSnippet?: string;
   readonly createdAt?: string;
+  readonly wcagCriterionId?: string;
+  readonly wcagId?: string;
+  readonly criterion?: string;
 }
 
 export interface BackendRemediationProposalDto {
@@ -164,7 +169,6 @@ export class HttpAuditApiClient implements AuditApiClient {
   applyRemediation(
     request: ApplyRemediationRequest
   ): Observable<{ success: boolean; appliedAt: string }> {
-    // If backend remediation ID is passed, approve & apply via /remediations/:id
     return this.http
       .post<{ id?: string; status?: string; appliedAt?: string; success?: boolean }>(
         `${this.baseUrl}/audits/${request.auditId}/findings/${request.findingId}/apply-remediation`,
@@ -200,20 +204,39 @@ export class HttpAuditApiClient implements AuditApiClient {
         : 'serious';
 
     const normalizedPattern = this.normalizePatternType(dto.patternType);
-    const wcagCriterionId = this.resolveWcagCriterionId(dto.ruleId, normalizedPattern);
-    const wcagCriterion = getWcagCriterion(wcagCriterionId) ?? WCAG_22_CATALOG['4.1.2'];
+    const ruleId = dto.ruleId || 'pattern:generic-a11y-rule';
 
-    const selector =
-      dto.targetSelector?.cssSelector || dto.selector || dto.targetSelector?.role || 'unknown-element';
+    // Priority 1: Direct WCAG criterion reference if provided
+    const directWcag = dto.wcagCriterionId || dto.wcagId || dto.criterion;
+    const wcagCriterionId = directWcag
+      ? String(directWcag).replace(/^wcag[:\-_]/i, '')
+      : this.resolveWcagCriterionId(ruleId, normalizedPattern);
+
+    const wcagCriterion =
+      getWcagCriterion(wcagCriterionId) ??
+      WCAG_22_CATALOG[wcagCriterionId] ??
+      WCAG_22_CATALOG['4.1.2'];
+
+    // Extract selector reliably from targetSelector object or string
+    let selector = 'unknown-element';
+    if (typeof dto.targetSelector === 'string') {
+      selector = dto.targetSelector;
+    } else if (dto.targetSelector && typeof dto.targetSelector === 'object') {
+      selector =
+        dto.targetSelector.cssSelector ||
+        (dto.targetSelector.role ? `[role="${dto.targetSelector.role}"]` : 'element');
+    } else if (dto.selector) {
+      selector = dto.selector;
+    }
 
     return {
       id: dto.id,
-      ruleId: dto.ruleId,
+      ruleId,
       wcagCriterionId: wcagCriterion.id,
       wcagCriterion,
       selector,
       htmlSnippet: dto.htmlSnippet || `<div class="${selector}"></div>`,
-      message: dto.message,
+      message: dto.message || 'Accessibility issue detected',
       severity,
       patternType: normalizedPattern
     };
@@ -230,17 +253,49 @@ export class HttpAuditApiClient implements AuditApiClient {
   }
 
   private resolveWcagCriterionId(ruleId: string, pattern?: PatternType): string {
-    if (ruleId.includes('1.1.1')) return '1.1.1';
-    if (ruleId.includes('1.3.1')) return '1.3.1';
-    if (ruleId.includes('1.4.3')) return '1.4.3';
-    if (ruleId.includes('2.1.1')) return '2.1.1';
-    if (ruleId.includes('2.1.2') || ruleId.includes('trap') || ruleId.includes('escape')) return '2.1.2';
-    if (ruleId.includes('2.4.3')) return '2.4.3';
-    if (ruleId.includes('2.4.7') || ruleId.includes('focus')) return '2.4.7';
-    if (ruleId.includes('3.3.1') || ruleId.includes('3.3.2')) return '3.3.2';
-    if (ruleId.includes('4.1.2') || ruleId.includes('name') || ruleId.includes('aria')) return '4.1.2';
+    const lower = ruleId.toLowerCase();
 
-    if (pattern === 'dialog') return '2.1.2';
+    // Explicit WCAG criteria IDs in rule name
+    if (lower.includes('1.1.1') || lower.includes('alt') || lower.includes('image')) return '1.1.1';
+    if (lower.includes('1.3.1') || lower.includes('structure') || lower.includes('heading')) return '1.3.1';
+    if (lower.includes('1.4.1') || lower.includes('color-alone')) return '1.4.1';
+    if (lower.includes('1.4.3') || lower.includes('contrast')) return '1.4.3';
+    if (lower.includes('1.4.6')) return '1.4.6';
+    if (lower.includes('1.4.11')) return '1.4.11';
+    if (lower.includes('1.4.12') || lower.includes('text-spacing')) return '1.4.12';
+    if (lower.includes('2.1.1') || lower.includes('keyboard') || lower.includes('scrollable')) return '2.1.1';
+    if (lower.includes('2.1.2') || lower.includes('trap') || lower.includes('escape')) return '2.1.2';
+    if (
+      lower.includes('2.4.3') ||
+      lower.includes('focus-return') ||
+      lower.includes('initial-focus') ||
+      lower.includes('focus-order') ||
+      lower.includes('taborder')
+    )
+      return '2.4.3';
+    if (lower.includes('2.4.7') || lower.includes('focus-visible')) return '2.4.7';
+    if (lower.includes('2.4.11')) return '2.4.11';
+    if (lower.includes('2.4.12')) return '2.4.12';
+    if (lower.includes('2.5.8') || lower.includes('target-size')) return '2.5.8';
+    if (lower.includes('3.3.1') || lower.includes('error')) return '3.3.1';
+    if (lower.includes('3.3.2') || lower.includes('label') || lower.includes('instruction')) return '3.3.2';
+    if (
+      lower.includes('4.1.2') ||
+      lower.includes('name') ||
+      lower.includes('role') ||
+      lower.includes('aria') ||
+      lower.includes('expanded') ||
+      lower.includes('popup')
+    )
+      return '4.1.2';
+    if (lower.includes('4.1.3') || lower.includes('status') || lower.includes('live')) return '4.1.3';
+
+    // Pattern-based mappings
+    if (pattern === 'dialog') {
+      if (lower.includes('trap') || lower.includes('escape') || lower.includes('modal')) return '2.1.2';
+      if (lower.includes('focus')) return '2.4.3';
+      return '4.1.2';
+    }
     if (pattern === 'tabs') return '2.1.1';
     if (pattern === 'accordion') return '4.1.2';
     if (pattern === 'combobox') return '4.1.2';
@@ -248,18 +303,18 @@ export class HttpAuditApiClient implements AuditApiClient {
     return '4.1.2';
   }
 
-  private normalizeAuditReport(
-    audit: BackendAuditDto,
-    findings: readonly Finding[]
-  ): AuditReport {
+  private normalizeAuditReport(audit: BackendAuditDto, findings: readonly Finding[]): AuditReport {
+    const summary =
+      audit.summary && typeof (audit.summary as { totalFindings?: number }).totalFindings === 'number'
+        ? (audit.summary as AuditReport['summary'])
+        : calculateAuditSummary(findings);
+
     return {
       id: audit.id,
       targetUrl: audit.url || audit.targetUrl || 'https://target.audit',
       timestamp: audit.createdAt || audit.timestamp || new Date().toISOString(),
       findings,
-      summary: audit.summary && typeof audit.summary.totalFindings === 'number'
-        ? audit.summary
-        : calculateAuditSummary(findings)
+      summary
     };
   }
 }
