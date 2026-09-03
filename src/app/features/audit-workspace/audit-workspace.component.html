@@ -83,24 +83,30 @@
   @if (showWebMcpPanel()) {
     <div id="webmcp-integrated-panel" class="webmcp-inline-panel" role="region" aria-label="WebMCP Agent Tools & Telemetry">
       <div class="webmcp-subtabs-row">
-        <div class="subtabs-nav" role="tablist" aria-label="WebMCP Views">
+        <div class="subtabs-segmented-control" role="tablist" aria-label="WebMCP Navigation Views">
           <button
+            type="button"
             role="tab"
-            class="subtab-btn"
+            class="seg-btn"
             [class.active]="selectedWebMcpSubTab() === 'tools'"
             [attr.aria-selected]="selectedWebMcpSubTab() === 'tools'"
             (click)="selectedWebMcpSubTab.set('tools')"
           >
-            <span>🛠️ Client Tools ({{ tools.length }})</span>
+            <span class="tab-icon" aria-hidden="true">🛠️</span>
+            <span class="tab-text">WebMCP Tools</span>
+            <span class="tab-badge">{{ tools.length }}</span>
           </button>
           <button
+            type="button"
             role="tab"
-            class="subtab-btn"
+            class="seg-btn"
             [class.active]="selectedWebMcpSubTab() === 'logs'"
             [attr.aria-selected]="selectedWebMcpSubTab() === 'logs'"
             (click)="selectedWebMcpSubTab.set('logs')"
           >
-            <span>📋 Live Telemetry Logs ({{ logs.length }})</span>
+            <span class="tab-icon" aria-hidden="true">📋</span>
+            <span class="tab-text">Telemetry Logs</span>
+            <span class="tab-badge" [class.highlight]="logs.length > 0">{{ logs.length }}</span>
           </button>
         </div>
 
