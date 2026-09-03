@@ -1,5 +1,5 @@
 import { UpperCasePipe } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { BadgeComponent, CardComponent, FilterChipGroupComponent, FilterOption, TextFieldComponent } from '../../components';
 import { AuditFacade } from '../../core/facades/audit.facade';
 import { Finding, FindingSeverity, WcagLevel } from '../../core/models';
@@ -13,6 +13,7 @@ import { Finding, FindingSeverity, WcagLevel } from '../../core/models';
 })
 export class FindingsListComponent {
   readonly auditFacade = inject(AuditFacade);
+  readonly densityMode = signal<'compact' | 'detailed'>('compact');
 
   readonly severityOptions: readonly FilterOption[] = [
     { id: 'all', label: 'All Severities' },

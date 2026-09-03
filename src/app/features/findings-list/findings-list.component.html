@@ -7,6 +7,28 @@
           <span class="count-badge" aria-label="Total {{ sum.totalFindings }} findings">({{ sum.totalFindings }})</span>
         }
       </h3>
+
+      <!-- Density View Toggle -->
+      <div class="density-toggle" role="group" aria-label="Findings view density">
+        <button
+          type="button"
+          class="density-btn"
+          [class.active]="densityMode() === 'compact'"
+          (click)="densityMode.set('compact')"
+          title="Compact view (see all findings at once)"
+        >
+          ≡ Compact
+        </button>
+        <button
+          type="button"
+          class="density-btn"
+          [class.active]="densityMode() === 'detailed'"
+          (click)="densityMode.set('detailed')"
+          title="Detailed view"
+        >
+          ▦ Detailed
+        </button>
+      </div>
     </div>
 
     <!-- Filters -->
@@ -47,7 +69,7 @@
   </div>
 
   <!-- Findings List -->
-  <div class="findings-list" role="list" aria-label="Accessibility findings">
+  <div class="findings-list" role="list" aria-label="Accessibility findings" [class.compact-mode]="densityMode() === 'compact'">
     @if (auditFacade.report()?.findings?.length === 0) {
       <div class="all-clear-box" role="status" aria-label="Accessibility Compliance Verified">
         <span class="all-clear-icon" aria-hidden="true">🎉</span>
@@ -62,6 +84,7 @@
         <div
           role="listitem"
           class="finding-item"
+          [class.compact]="densityMode() === 'compact'"
           [class.selected]="isSelected(finding)"
           (click)="selectFinding(finding)"
           (keydown.enter)="selectFinding(finding)"
@@ -69,23 +92,41 @@
           tabindex="0"
           [attr.aria-selected]="isSelected(finding)"
         >
-          <app-card [elevated]="isSelected(finding)" [interactive]="true">
-            <div card-header class="finding-card-header">
-              <div class="badges-group">
-                <app-badge [variant]="finding.severity">{{ finding.severity | uppercase }}</app-badge>
-                @if (finding.wcagCriterion; as wcag) {
-                  <app-badge variant="info">WCAG {{ wcag.id }} ({{ wcag.level }})</app-badge>
-                }
-                @if (finding.patternType) {
-                  <app-badge variant="neutral">APG {{ finding.patternType | uppercase }}</app-badge>
-                }
+          @if (densityMode() === 'compact') {
+            <!-- Compact finding card: View all findings at a glance -->
+            <div class="compact-finding-card">
+              <div class="compact-top-row">
+                <div class="badges-group">
+                  <app-badge [variant]="finding.severity" size="sm">{{ finding.severity | uppercase }}</app-badge>
+                  @if (finding.wcagCriterion; as wcag) {
+                    <span class="wcag-pill">WCAG {{ wcag.id }}</span>
+                  }
+                </div>
+                <code class="rule-id-compact">{{ finding.ruleId }}</code>
               </div>
-              <code class="rule-id">{{ finding.ruleId }}</code>
+              <p class="compact-message" title="{{ finding.message }}">{{ finding.message }}</p>
+              <code class="compact-selector" title="{{ finding.selector }}">{{ finding.selector }}</code>
             </div>
+          } @else {
+            <!-- Detailed finding card -->
+            <app-card [elevated]="isSelected(finding)" [interactive]="true">
+              <div card-header class="finding-card-header">
+                <div class="badges-group">
+                  <app-badge [variant]="finding.severity">{{ finding.severity | uppercase }}</app-badge>
+                  @if (finding.wcagCriterion; as wcag) {
+                    <app-badge variant="info">WCAG {{ wcag.id }} ({{ wcag.level }})</app-badge>
+                  }
+                  @if (finding.patternType) {
+                    <app-badge variant="neutral">APG {{ finding.patternType | uppercase }}</app-badge>
+                  }
+                </div>
+                <code class="rule-id">{{ finding.ruleId }}</code>
+              </div>
 
-            <p class="finding-message">{{ finding.message }}</p>
-            <code class="finding-selector" title="DOM Selector">{{ finding.selector }}</code>
-          </app-card>
+              <p class="finding-message">{{ finding.message }}</p>
+              <code class="finding-selector" title="DOM Selector">{{ finding.selector }}</code>
+            </app-card>
+          }
         </div>
       } @empty {
         <div class="empty-state" role="status">
