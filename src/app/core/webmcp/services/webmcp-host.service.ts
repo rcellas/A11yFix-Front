@@ -40,6 +40,10 @@ export class WebMcpHostService {
     this.isPanelOpen.update((open) => !open);
   }
 
+  clearLogs(): void {
+    this.executionLogs.set([]);
+  }
+
   getToolsList(): readonly WebMcpTool[] {
     return this.tools;
   }

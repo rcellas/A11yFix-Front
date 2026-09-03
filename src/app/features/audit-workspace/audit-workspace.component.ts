@@ -56,6 +56,20 @@ export class AuditWorkspaceComponent {
     this.showWebMcpPanel.set(false);
   }
 
+  resetWorkspace(): void {
+    this.urlInput.set('');
+    this.errorMessage.set(null);
+    this.lastExecutionResult.set(null);
+    this.allInStatusMessage.set(null);
+    this.webMcpHost.clearLogs();
+    this.auditFacade.reset();
+  }
+
+  clearLogs(): void {
+    this.webMcpHost.clearLogs();
+    this.lastExecutionResult.set(null);
+  }
+
   onUrlChange(newUrl: string): void {
     this.urlInput.set(newUrl);
     this.errorMessage.set(null);

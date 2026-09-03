@@ -55,6 +55,18 @@
           Audit Website
         }
       </app-button>
+
+      @if (auditFacade.isCompleted() || urlInput().length > 0 || lastExecutionResult() !== null) {
+        <app-button
+          variant="secondary"
+          size="md"
+          type="button"
+          (clicked)="resetWorkspace()"
+          ariaLabel="Reset workspace and clear audit session"
+        >
+          🔄 New Audit / Clear
+        </app-button>
+      }
     </div>
   </form>
 
@@ -94,6 +106,11 @@
 
         <div class="webmcp-controls-right">
           <app-badge variant="success">Host Active in document.modelContext</app-badge>
+          @if (logs.length > 0) {
+            <button type="button" class="clear-logs-header-btn" (click)="clearLogs()" title="Clear telemetry logs">
+              🗑️ Clear Logs
+            </button>
+          }
           <button class="close-console-btn" (click)="closeWebMcpPanel()" aria-label="Close WebMCP Console">✕ Close</button>
         </div>
       </div>
