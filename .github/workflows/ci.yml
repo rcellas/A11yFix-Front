@@ -25,6 +25,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Generate environment files
+        run: node scripts/generate-env.js
+        env:
+          NG_API_URL: 'http://localhost:3000'
+
       - name: Typecheck
         run: pnpm exec tsc --noEmit -p tsconfig.app.json
 
@@ -33,3 +38,5 @@ jobs:
 
       - name: Build production bundle
         run: pnpm run build
+        env:
+          NG_API_URL: 'http://localhost:3000'
