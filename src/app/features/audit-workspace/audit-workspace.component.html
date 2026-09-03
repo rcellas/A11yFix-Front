@@ -1,49 +1,172 @@
 <section class="audit-workspace-bar" aria-labelledby="scan-heading">
-  <div class="workspace-header">
-    <h2 id="scan-heading" class="workspace-title">Accessibility QA Inspector</h2>
-    <p class="workspace-subtitle">
-      Automated WCAG 2.2 detection, AI-guided ARIA pattern remediation, and human-verified fixes.
-    </p>
+  <!-- Mode Switcher Tabs (Accessible WAI-ARIA APG Tabs) -->
+  <div class="workspace-top-row">
+    <div class="header-text">
+      <h2 id="scan-heading" class="workspace-title">Accessibility QA Inspector</h2>
+      <p class="workspace-subtitle">
+        Automated WCAG 2.2 detection, AI-guided ARIA pattern remediation, and human-verified fixes.
+      </p>
+    </div>
+
+    <nav class="mode-tabs" role="tablist" aria-label="Inspection Modes">
+      <button
+        role="tab"
+        class="mode-tab-btn"
+        [class.active]="activeTab() === 'scanner'"
+        [attr.aria-selected]="activeTab() === 'scanner'"
+        id="tab-url-scanner"
+        aria-controls="panel-url-scanner"
+        (click)="setTab('scanner')"
+      >
+        🌐 URL Scanner
+      </button>
+      <button
+        role="tab"
+        class="mode-tab-btn"
+        [class.active]="activeTab() === 'webmcp'"
+        [attr.aria-selected]="activeTab() === 'webmcp'"
+        id="tab-webmcp-tools"
+        aria-controls="panel-webmcp-tools"
+        (click)="setTab('webmcp')"
+      >
+        ⚡ WebMCP Agent Tools ({{ tools.length }})
+      </button>
+    </nav>
   </div>
 
-  <form class="scan-form" (ngSubmit)="startAudit()" role="search" aria-label="Website Accessibility Audit">
-    <div class="input-wrapper">
-      <app-text-field
-        id="target-url-input"
-        label="Target URL"
-        placeholder="https://example.com"
-        type="url"
-        [value]="urlInput()"
-        [errorMessage]="errorMessage() || auditFacade.error() || ''"
-        [disabled]="auditFacade.isScanning()"
-        [required]="true"
-        (valueChange)="onUrlChange($event)"
-      />
-    </div>
+  <!-- TAB 1: URL Scanner Form -->
+  @if (activeTab() === 'scanner') {
+    <div id="panel-url-scanner" role="tabpanel" aria-labelledby="tab-url-scanner" class="scanner-panel">
+      <form class="scan-form" (ngSubmit)="startAudit()" role="search" aria-label="Website Accessibility Audit">
+        <div class="input-wrapper">
+          <app-text-field
+            id="target-url-input"
+            label="Target URL"
+            placeholder="https://example.com"
+            type="url"
+            [value]="urlInput()"
+            [errorMessage]="errorMessage() || auditFacade.error() || ''"
+            [disabled]="auditFacade.isScanning()"
+            [required]="true"
+            (valueChange)="onUrlChange($event)"
+          />
+        </div>
 
-    <div class="action-wrapper">
-      <app-button
-        variant="primary"
-        size="md"
-        type="submit"
-        [disabled]="auditFacade.isScanning()"
-        ariaLabel="Run accessibility audit scan"
-      >
-        @if (auditFacade.isScanning()) {
-          Scanning...
-        } @else {
-          Audit Website
-        }
-      </app-button>
-    </div>
-  </form>
+        <div class="action-wrapper">
+          <app-button
+            variant="primary"
+            size="md"
+            type="submit"
+            [disabled]="auditFacade.isScanning()"
+            ariaLabel="Run accessibility audit scan"
+          >
+            @if (auditFacade.isScanning()) {
+              Scanning...
+            } @else {
+              Audit Website
+            }
+          </app-button>
+        </div>
+      </form>
 
-  @if (auditFacade.isScanning()) {
-    <div class="scan-progress-container" role="progressbar" aria-label="Audit scanning progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45">
-      <div class="progress-track">
-        <div class="progress-indicator"></div>
+      @if (auditFacade.isScanning()) {
+        <div class="scan-progress-container" role="progressbar" aria-label="Audit scanning progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45">
+          <div class="progress-track">
+            <div class="progress-indicator"></div>
+          </div>
+          <p class="progress-text">Analyzing DOM tree, color contrast, and WAI-ARIA APG compliance...</p>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- TAB 2: Inline WebMCP Tools & Telemetry Inspector -->
+  @if (activeTab() === 'webmcp') {
+    <div id="panel-webmcp-tools" role="tabpanel" aria-labelledby="tab-webmcp-tools" class="webmcp-inline-panel">
+      <div class="webmcp-subtabs-row">
+        <div class="subtabs-nav" role="tablist" aria-label="WebMCP Sub Navigation">
+          <button
+            role="tab"
+            class="subtab-btn"
+            [class.active]="selectedWebMcpSubTab() === 'tools'"
+            [attr.aria-selected]="selectedWebMcpSubTab() === 'tools'"
+            (click)="selectedWebMcpSubTab.set('tools')"
+          >
+            🛠️ Client Tools ({{ tools.length }})
+          </button>
+          <button
+            role="tab"
+            class="subtab-btn"
+            [class.active]="selectedWebMcpSubTab() === 'logs'"
+            [attr.aria-selected]="selectedWebMcpSubTab() === 'logs'"
+            (click)="selectedWebMcpSubTab.set('logs')"
+          >
+            📋 Live Telemetry & Logs ({{ logs.length }})
+          </button>
+        </div>
+
+        <div class="webmcp-status-pill">
+          <app-badge variant="success">WebMCP Host Active in document.modelContext</app-badge>
+        </div>
       </div>
-      <p class="progress-text">Analyzing DOM tree, color contrast, and WAI-ARIA APG compliance...</p>
+
+      <!-- Subtab: Tools Catalog -->
+      @if (selectedWebMcpSubTab() === 'tools') {
+        <div class="tools-grid">
+          @for (tool of tools; track tool.name) {
+            <div class="tool-item-card">
+              <div class="tool-top">
+                <div class="tool-title-badge">
+                  <code class="tool-code">{{ tool.name }}</code>
+                  <app-badge [variant]="tool.tier === 'WRITE' ? 'critical' : tool.tier === 'PROPOSE' ? 'warning' : 'info'">
+                    {{ tool.tier }}
+                  </app-badge>
+                </div>
+                <app-button size="sm" variant="secondary" (clicked)="runQuickTool(tool.name)" ariaLabel="Run {{ tool.name }}">
+                  ▶ Test Tool
+                </app-button>
+              </div>
+              <p class="tool-summary">{{ tool.description }}</p>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Subtab: Live Logs -->
+      @if (selectedWebMcpSubTab() === 'logs') {
+        <div class="logs-container">
+          @if (lastExecutionResult(); as result) {
+            <div class="last-result-box">
+              <h4 class="box-title">Latest Execution Output</h4>
+              <pre class="json-code"><code>{{ result }}</code></pre>
+            </div>
+          }
+
+          <div class="logs-feed">
+            @for (log of logs; track log.id) {
+              <div class="log-entry" [class.denied]="log.status === 'denied'" [class.failed]="log.status === 'failed'">
+                <div class="entry-meta">
+                  <span class="entry-time">{{ log.timestamp }}</span>
+                  <code class="entry-tool">{{ log.toolName }}</code>
+                  <app-badge [variant]="log.status === 'success' ? 'success' : log.status === 'denied' ? 'warning' : 'critical'">
+                    {{ log.status | uppercase }}
+                  </app-badge>
+                </div>
+
+                @if (log.error) {
+                  <p class="entry-error">{{ log.error }}</p>
+                } @else if (log.output) {
+                  <pre class="entry-output"><code>{{ log.output | json }}</code></pre>
+                }
+              </div>
+            } @empty {
+              <div class="empty-logs">
+                <p>No WebMCP executions yet. Click "Test Tool" on any tool to trigger live telemetry.</p>
+              </div>
+            }
+          </div>
+        </div>
+      }
     </div>
   }
 </section>
