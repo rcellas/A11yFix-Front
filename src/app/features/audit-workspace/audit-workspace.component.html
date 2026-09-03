@@ -76,7 +76,7 @@
   </form>
 
   @if (auditFacade.isScanning()) {
-    <div class="scan-progress-container" role="progressbar" aria-label="Audit scanning progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45">
+    <div class="scan-progress-container" role="progressbar" aria-live="polite" aria-atomic="true" aria-label="Audit scanning progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45">
       <div class="progress-track">
         <div class="progress-indicator"></div>
       </div>
