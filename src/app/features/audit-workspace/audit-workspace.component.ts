@@ -1,9 +1,8 @@
-import { JsonPipe, UpperCasePipe } from '@angular/common';
+import { UpperCasePipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { BadgeComponent, ButtonComponent, CardComponent, TextFieldComponent } from '../../components';
+import { ButtonComponent, TextFieldComponent } from '../../components';
 import { AuditFacade } from '../../core/facades/audit.facade';
-import { PatternType } from '../../core/models';
 import { WebMcpHostService } from '../../core/webmcp/services/webmcp-host.service';
 
 @Component({
@@ -11,11 +10,9 @@ import { WebMcpHostService } from '../../core/webmcp/services/webmcp-host.servic
   standalone: true,
   imports: [
     FormsModule,
-    BadgeComponent,
     ButtonComponent,
     TextFieldComponent,
-    UpperCasePipe,
-    JsonPipe
+    UpperCasePipe
   ],
   templateUrl: './audit-workspace.component.html',
   styleUrl: './audit-workspace.component.css'
@@ -179,5 +176,18 @@ export class AuditWorkspaceComponent {
       this.lastExecutionResult.set(`Error: ${msg}`);
       this.selectedWebMcpSubTab.set('logs');
     }
+  }
+
+  formatLogOutput(output: unknown): string {
+    if (!output) return '';
+    if (typeof output === 'string') return output;
+    if (typeof output === 'object') {
+      try {
+        return JSON.stringify(output, null, 2);
+      } catch {
+        return String(output);
+      }
+    }
+    return String(output);
   }
 }

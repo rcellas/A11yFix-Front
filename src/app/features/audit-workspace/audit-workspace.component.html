@@ -241,22 +241,30 @@
             @for (log of logs; track log.id) {
               <div class="log-entry" [class.denied]="log.status === 'denied'" [class.failed]="log.status === 'failed'">
                 <div class="entry-meta">
+                  <div class="meta-left">
+                    <span class="status-indicator" [class.status-success]="log.status === 'success'" [class.status-denied]="log.status === 'denied'" [class.status-failed]="log.status === 'failed'">
+                      <span class="dot"></span>
+                      {{ log.status === 'success' ? 'SUCCESS' : (log.status | uppercase) }}
+                    </span>
+                    <code class="entry-tool">{{ log.toolName }}</code>
+                  </div>
                   <span class="entry-time">{{ log.timestamp }}</span>
-                  <code class="entry-tool">{{ log.toolName }}</code>
-                  <app-badge [variant]="log.status === 'success' ? 'success' : log.status === 'denied' ? 'warning' : 'critical'">
-                    {{ log.status | uppercase }}
-                  </app-badge>
                 </div>
 
                 @if (log.error) {
-                  <p class="entry-error">{{ log.error }}</p>
+                  <div class="entry-error-box">
+                    <span class="error-icon">✕</span>
+                    <span class="error-msg">{{ log.error }}</span>
+                  </div>
                 } @else if (log.output) {
-                  <pre class="entry-output"><code>{{ log.output | json }}</code></pre>
+                  <div class="entry-output-wrapper">
+                    <pre class="entry-output"><code>{{ formatLogOutput(log.output) }}</code></pre>
+                  </div>
                 }
               </div>
             } @empty {
               <div class="empty-logs">
-                <p>No WebMCP executions yet. Click "Run" or "Run Pipeline" to view real-time telemetry.</p>
+                <p>No WebMCP executions yet. Click "Run ➔" or "Run Pipeline →" to view real-time telemetry.</p>
               </div>
             }
           </div>
