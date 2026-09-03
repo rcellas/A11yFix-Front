@@ -65,7 +65,7 @@
     }
 
     <!-- Remediation Proposal & Code Diff -->
-    @if (finding.remediation; as rem) {
+    @if (currentRemediation(); as rem) {
       <section class="remediation-section" aria-labelledby="remediation-heading">
         <div class="remediation-header">
           <h4 id="remediation-heading" class="section-heading">AI Remediation Proposal</h4>
@@ -137,6 +137,32 @@
               </p>
             }
           </div>
+        </div>
+      </section>
+    } @else {
+      <!-- Uncomputed Remediation Generator Card -->
+      <section class="remediation-section empty-remediation" aria-labelledby="remediation-heading">
+        <div class="remediation-header">
+          <h4 id="remediation-heading" class="section-heading">AI Remediation Proposal</h4>
+          <app-badge variant="neutral">Diff Ready to Generate</app-badge>
+        </div>
+        <p class="remediation-prompt">
+          Generate an AI-guided code remediation diff and WCAG 2.2 fix for <code>{{ finding.ruleId }}</code>.
+        </p>
+        <div class="generate-action-row">
+          <app-button
+            variant="primary"
+            size="md"
+            [disabled]="isGeneratingRemediation()"
+            (btnClick)="generateRemediation()"
+            ariaLabel="Generate AI Remediation Diff for this finding"
+          >
+            @if (isGeneratingRemediation()) {
+              Generating AI Proposal...
+            } @else {
+              ✨ Generate AI Remediation Diff
+            }
+          </app-button>
         </div>
       </section>
     }

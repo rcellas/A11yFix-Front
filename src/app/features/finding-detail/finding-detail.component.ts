@@ -21,9 +21,16 @@ export class FindingDetailComponent {
   readonly selectedFinding = this.auditFacade.selectedFinding;
   readonly feedbackMessage = signal<string | null>(null);
   readonly copyStatus = signal<string | null>(null);
+  readonly isGeneratingRemediation = signal<boolean>(false);
+
+  readonly currentRemediation = computed(() => {
+    return this.remediationFacade.proposedRemediation() ?? this.selectedFinding()?.remediation ?? null;
+  });
+
+  readonly hasRemediation = computed(() => this.currentRemediation() !== null);
 
   readonly diffText = computed(() => {
-    const rem = this.selectedFinding()?.remediation;
+    const rem = this.currentRemediation();
     if (!rem) return '';
     return `--- original.html\n+++ remediation.html\n-${rem.originalHtml.split('\n').join('\n-')}\n+${rem.proposedHtml.split('\n').join('\n+')}`;
   });
@@ -46,6 +53,20 @@ export class FindingDetailComponent {
         this.copyStatus.set(null);
       }
     });
+  }
+
+  async generateRemediation(): Promise<void> {
+    const finding = this.selectedFinding();
+    const report = this.auditFacade.report();
+    if (!finding) return;
+
+    this.isGeneratingRemediation.set(true);
+    this.feedbackMessage.set(null);
+    try {
+      await this.remediationFacade.requestAiRemediation(report?.id || 'current-audit', finding.id);
+    } finally {
+      this.isGeneratingRemediation.set(false);
+    }
   }
 
   get apgPatternRule() {

@@ -140,6 +140,29 @@
   justify-content: space-between;
 }
 
+.empty-remediation {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px dashed #cbd5e1;
+  padding: var(--space-5);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.remediation-prompt {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-normal);
+}
+
+.generate-action-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
 .approval-barrier-box {
   display: flex;
   flex-direction: column;
