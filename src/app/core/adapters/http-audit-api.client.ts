@@ -106,40 +106,22 @@ export class HttpAuditApiClient implements AuditApiClient {
           return of(this.normalizeAuditReport(createdAudit, domainFindings));
         }
 
-        // Poll backend for findings (up to 3 quick attempts)
-        return timer(0, 800).pipe(
-          switchMap(() =>
-            forkJoin({
-              audit: this.http
-                .get<BackendAuditDto>(`${this.baseUrl}/audits/${auditId}`)
-                .pipe(catchError(() => of(createdAudit))),
-              findingsRaw: this.http
-                .get<unknown>(`${this.baseUrl}/audits/${auditId}/findings`)
-                .pipe(catchError(() => of([])))
+        // Query backend for findings
+        return this.http
+          .get<unknown>(`${this.baseUrl}/audits/${auditId}/findings`)
+          .pipe(
+            catchError(() => of([])),
+            map((findingsRaw) => {
+              const findingsList = extractFindingsArray(findingsRaw);
+              let domainFindings: Finding[] = [];
+              if (findingsList.length > 0) {
+                domainFindings = findingsList.map((dto) => this.mapFindingDtoToDomain(dto));
+              } else {
+                domainFindings = this.getFallbackPatternFindings(auditId);
+              }
+              return this.normalizeAuditReport(createdAudit, domainFindings);
             })
-          ),
-          map(({ audit, findingsRaw }) => {
-            const findingsList = extractFindingsArray(findingsRaw);
-            const isFinished = findingsList.length > 0;
-            return {
-              audit: { ...createdAudit, ...audit },
-              findings: findingsList,
-              isFinished
-            };
-          }),
-          filter((res, index) => res.isFinished || index >= 2),
-          take(1),
-          map(({ audit, findings }) => {
-            let domainFindings: Finding[] = [];
-            if (findings.length > 0) {
-              domainFindings = findings.map((dto) => this.mapFindingDtoToDomain(dto));
-            } else {
-              // Provide complete WAI-ARIA APG pattern findings for audit inspection
-              domainFindings = this.getFallbackPatternFindings(auditId);
-            }
-            return this.normalizeAuditReport(audit, domainFindings);
-          })
-        );
+          );
       }),
       catchError((err) => {
         console.warn('Backend /audits error, activating pattern findings fallback:', err);

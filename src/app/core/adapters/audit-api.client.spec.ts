@@ -48,6 +48,8 @@ describe('Audit API Clients', () => {
         createdAt: '2026-09-03T14:45:00.000Z'
       });
 
+      await Promise.resolve();
+
       const getReq = httpMock.expectOne('http://localhost:3000/audits/7b2d5a34-29ef-4c4e-9b2f-38e55cf94a10/findings');
       expect(getReq.request.method).toBe('GET');
 
