@@ -1,13 +1,13 @@
-<div class="diff-container" role="region" [attr.aria-label]="'Diff de código para ' + filename()">
+<div class="diff-container" role="region" [attr.aria-label]="'Code diff for ' + filename()">
   <div class="diff-header">
     <span class="diff-filename">{{ filename() }}</span>
     <button
       type="button"
       class="diff-copy-btn"
       (click)="copyToClipboard()"
-      [attr.aria-label]="copied() ? 'Copiado al portapapeles' : 'Copiar diff de código'"
+      [attr.aria-label]="copied() ? 'Copied to clipboard' : 'Copy code diff'"
     >
-      {{ copied() ? '✓ Copiado' : 'Copiar código' }}
+      {{ copied() ? '✓ Copied' : 'Copy code' }}
     </button>
   </div>
 
