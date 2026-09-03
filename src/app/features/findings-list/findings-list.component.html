@@ -91,24 +91,44 @@
           tabindex="0"
           [attr.aria-selected]="isSelected(finding)"
         >
-          <!-- Unified finding card with clamped text and compact structure -->
-          <div class="finding-card" [class.compact]="densityMode() === 'compact'">
-            <div class="card-top-row">
-              <div class="badges-group">
-                <app-badge [variant]="finding.severity" size="sm">{{ finding.severity | uppercase }}</app-badge>
-                @if (finding.wcagCriterion; as wcag) {
-                  <span class="wcag-pill">WCAG {{ wcag.id }} ({{ wcag.level }})</span>
-                }
-                @if (finding.patternType) {
-                  <span class="pattern-pill">APG {{ finding.patternType | uppercase }}</span>
-                }
+          @if (densityMode() === 'compact') {
+            <!-- Compact finding card: View all findings at a glance -->
+            <div class="compact-finding-card">
+              <div class="compact-top-row">
+                <div class="badges-group">
+                  <app-badge [variant]="finding.severity" size="sm">{{ finding.severity | uppercase }}</app-badge>
+                  @if (finding.wcagCriterion; as wcag) {
+                    <span class="wcag-pill">WCAG {{ wcag.id }}</span>
+                  }
+                  @if (finding.patternType) {
+                    <span class="pattern-pill">APG {{ finding.patternType | uppercase }}</span>
+                  }
+                </div>
+                <code class="rule-id-compact">{{ finding.ruleId }}</code>
               </div>
-              <code class="rule-id">{{ finding.ruleId }}</code>
+              <p class="compact-message">{{ finding.message }}</p>
+              <code class="compact-selector">{{ finding.selector }}</code>
             </div>
+          } @else {
+            <!-- Detailed finding card -->
+            <app-card [elevated]="isSelected(finding)" [interactive]="true">
+              <div card-header class="finding-card-header">
+                <div class="badges-group">
+                  <app-badge [variant]="finding.severity">{{ finding.severity | uppercase }}</app-badge>
+                  @if (finding.wcagCriterion; as wcag) {
+                    <app-badge variant="info">WCAG {{ wcag.id }} ({{ wcag.level }})</app-badge>
+                  }
+                  @if (finding.patternType) {
+                    <app-badge variant="neutral">APG {{ finding.patternType | uppercase }}</app-badge>
+                  }
+                </div>
+                <code class="rule-id">{{ finding.ruleId }}</code>
+              </div>
 
-            <p class="finding-message">{{ finding.message }}</p>
-            <code class="finding-selector">{{ finding.selector }}</code>
-          </div>
+              <p class="finding-message">{{ finding.message }}</p>
+              <code class="finding-selector">{{ finding.selector }}</code>
+            </app-card>
+          }
         </div>
       } @empty {
         <div class="empty-state" role="status">
