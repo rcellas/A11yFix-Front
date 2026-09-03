@@ -24,7 +24,7 @@ export class AuditWorkspaceComponent {
   readonly auditFacade = inject(AuditFacade);
   readonly webMcpHost = inject(WebMcpHostService);
 
-  readonly activeTab = signal<'scanner' | 'webmcp'>('scanner');
+  readonly showWebMcpPanel = signal<boolean>(false);
   readonly selectedWebMcpSubTab = signal<'tools' | 'logs'>('tools');
   readonly lastExecutionResult = signal<string | null>(null);
 
@@ -39,8 +39,8 @@ export class AuditWorkspaceComponent {
     return this.webMcpHost.executionLogs();
   }
 
-  setTab(tab: 'scanner' | 'webmcp'): void {
-    this.activeTab.set(tab);
+  toggleWebMcpPanel(): void {
+    this.showWebMcpPanel.update((open) => !open);
   }
 
   onUrlChange(newUrl: string): void {

@@ -1,5 +1,5 @@
 <section class="audit-workspace-bar" aria-labelledby="scan-heading">
-  <!-- Mode Switcher Tabs (Accessible WAI-ARIA APG Tabs) -->
+  <!-- Header Row -->
   <div class="workspace-top-row">
     <div class="header-text">
       <h2 id="scan-heading" class="workspace-title">Accessibility QA Inspector</h2>
@@ -8,83 +8,70 @@
       </p>
     </div>
 
-    <nav class="mode-tabs" role="tablist" aria-label="Inspection Modes">
+    <!-- Toggle WebMCP Agent Tools Panel -->
+    <div class="header-actions">
       <button
-        role="tab"
-        class="mode-tab-btn"
-        [class.active]="activeTab() === 'scanner'"
-        [attr.aria-selected]="activeTab() === 'scanner'"
-        id="tab-url-scanner"
-        aria-controls="panel-url-scanner"
-        (click)="setTab('scanner')"
+        type="button"
+        class="webmcp-toggle-btn"
+        [class.active]="showWebMcpPanel()"
+        (click)="toggleWebMcpPanel()"
+        aria-expanded="{{ showWebMcpPanel() }}"
+        aria-controls="webmcp-integrated-panel"
       >
-        🌐 URL Scanner
+        <span class="btn-icon">⚡</span>
+        <span>WebMCP Agent Tools ({{ tools.length }})</span>
+        <span class="chevron-icon">{{ showWebMcpPanel() ? '▲' : '▼' }}</span>
       </button>
-      <button
-        role="tab"
-        class="mode-tab-btn"
-        [class.active]="activeTab() === 'webmcp'"
-        [attr.aria-selected]="activeTab() === 'webmcp'"
-        id="tab-webmcp-tools"
-        aria-controls="panel-webmcp-tools"
-        (click)="setTab('webmcp')"
-      >
-        ⚡ WebMCP Agent Tools ({{ tools.length }})
-      </button>
-    </nav>
+    </div>
   </div>
 
-  <!-- TAB 1: URL Scanner Form -->
-  @if (activeTab() === 'scanner') {
-    <div id="panel-url-scanner" role="tabpanel" aria-labelledby="tab-url-scanner" class="scanner-panel">
-      <form class="scan-form" (ngSubmit)="startAudit()" role="search" aria-label="Website Accessibility Audit">
-        <div class="input-wrapper">
-          <app-text-field
-            id="target-url-input"
-            label="Target URL"
-            placeholder="https://example.com"
-            type="url"
-            [value]="urlInput()"
-            [errorMessage]="errorMessage() || auditFacade.error() || ''"
-            [disabled]="auditFacade.isScanning()"
-            [required]="true"
-            (valueChange)="onUrlChange($event)"
-          />
-        </div>
+  <!-- Target URL Scanner Form (ALWAYS VISIBLE) -->
+  <form class="scan-form" (ngSubmit)="startAudit()" role="search" aria-label="Website Accessibility Audit">
+    <div class="input-wrapper">
+      <app-text-field
+        id="target-url-input"
+        label="Target URL"
+        placeholder="https://example.com"
+        type="url"
+        [value]="urlInput()"
+        [errorMessage]="errorMessage() || auditFacade.error() || ''"
+        [disabled]="auditFacade.isScanning()"
+        [required]="true"
+        (valueChange)="onUrlChange($event)"
+      />
+    </div>
 
-        <div class="action-wrapper">
-          <app-button
-            variant="primary"
-            size="md"
-            type="submit"
-            [disabled]="auditFacade.isScanning()"
-            ariaLabel="Run accessibility audit scan"
-          >
-            @if (auditFacade.isScanning()) {
-              Scanning...
-            } @else {
-              Audit Website
-            }
-          </app-button>
-        </div>
-      </form>
+    <div class="action-wrapper">
+      <app-button
+        variant="primary"
+        size="md"
+        type="submit"
+        [disabled]="auditFacade.isScanning()"
+        ariaLabel="Run accessibility audit scan"
+      >
+        @if (auditFacade.isScanning()) {
+          Scanning...
+        } @else {
+          Audit Website
+        }
+      </app-button>
+    </div>
+  </form>
 
-      @if (auditFacade.isScanning()) {
-        <div class="scan-progress-container" role="progressbar" aria-label="Audit scanning progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45">
-          <div class="progress-track">
-            <div class="progress-indicator"></div>
-          </div>
-          <p class="progress-text">Analyzing DOM tree, color contrast, and WAI-ARIA APG compliance...</p>
-        </div>
-      }
+  @if (auditFacade.isScanning()) {
+    <div class="scan-progress-container" role="progressbar" aria-label="Audit scanning progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45">
+      <div class="progress-track">
+        <div class="progress-indicator"></div>
+      </div>
+      <p class="progress-text">Analyzing DOM tree, color contrast, and WAI-ARIA APG compliance...</p>
     </div>
   }
 
-  <!-- TAB 2: Inline WebMCP Tools & Telemetry Inspector -->
-  @if (activeTab() === 'webmcp') {
-    <div id="panel-webmcp-tools" role="tabpanel" aria-labelledby="tab-webmcp-tools" class="webmcp-inline-panel">
+  <!-- WebMCP Integrated Agent Tools & Telemetry (Expandable without hiding URL) -->
+  @if (showWebMcpPanel()) {
+    <div id="webmcp-integrated-panel" class="webmcp-inline-panel" role="region" aria-label="WebMCP Agent Tools & Telemetry">
       <div class="webmcp-subtabs-row">
-        <div class="subtabs-nav" role="tablist" aria-label="WebMCP Sub Navigation">
+        <div class="subtabs-nav" role="tablist" aria-label="WebMCP Views">
           <button
             role="tab"
             class="subtab-btn"
