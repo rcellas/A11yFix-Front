@@ -37,7 +37,7 @@ export class AuditWorkspaceComponent {
   readonly selectedSeverityFilter = signal<string>('all');
   readonly selectedPatternFilter = signal<PatternType>('dialog');
 
-  readonly urlInput = signal<string>('https://example.com');
+  readonly urlInput = signal<string>('');
   readonly errorMessage = signal<string | null>(null);
 
   get tools() {
