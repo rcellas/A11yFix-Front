@@ -59,11 +59,13 @@ export class AuditWorkspaceComponent {
     this.allInStatusMessage.set(null);
     this.webMcpHost.clearLogs();
     this.auditFacade.reset();
+    this.selectedWebMcpSubTab.set('tools');
   }
 
   clearLogs(): void {
     this.webMcpHost.clearLogs();
     this.lastExecutionResult.set(null);
+    this.selectedWebMcpSubTab.set('tools');
   }
 
   onUrlChange(newUrl: string): void {
