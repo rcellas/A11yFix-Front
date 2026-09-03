@@ -3,6 +3,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BadgeComponent, ButtonComponent, CardComponent, TextFieldComponent } from '../../components';
 import { AuditFacade } from '../../core/facades/audit.facade';
+import { FindingSeverity, PatternType } from '../../core/models';
 import { WebMcpHostService } from '../../core/webmcp/services/webmcp-host.service';
 
 @Component({
@@ -28,6 +29,10 @@ export class AuditWorkspaceComponent {
   readonly selectedWebMcpSubTab = signal<'tools' | 'logs'>('tools');
   readonly lastExecutionResult = signal<string | null>(null);
 
+  // Custom tool options
+  readonly selectedSeverityFilter = signal<string>('all');
+  readonly selectedPatternFilter = signal<PatternType>('dialog');
+
   readonly urlInput = signal<string>('https://example.com');
   readonly errorMessage = signal<string | null>(null);
 
@@ -41,6 +46,10 @@ export class AuditWorkspaceComponent {
 
   toggleWebMcpPanel(): void {
     this.showWebMcpPanel.update((open) => !open);
+  }
+
+  closeWebMcpPanel(): void {
+    this.showWebMcpPanel.set(false);
   }
 
   onUrlChange(newUrl: string): void {
@@ -73,24 +82,27 @@ export class AuditWorkspaceComponent {
       const currentReport = this.auditFacade.report();
       const currentFinding =
         this.auditFacade.selectedFinding() || (currentReport?.findings && currentReport.findings[0]);
-      const currentFindingId = currentFinding ? currentFinding.id : 'audit-1-f1';
+      const currentFindingId = currentFinding ? currentFinding.id : undefined;
 
       if (toolName === 'create_audit') {
-        args = { url: this.urlInput().trim() || 'https://dequeuniversity.com/demo/mars/' };
+        // Runs a full website audit for the entire URL
+        const urlToScan = this.urlInput().trim() || 'https://example.com';
+        args = { url: urlToScan };
       } else if (toolName === 'get_audit') {
         args = { auditId: currentReport?.id || 'audit-1' };
       } else if (toolName === 'get_findings') {
-        args = { severity: 'critical' };
+        const sev = this.selectedSeverityFilter();
+        args = sev !== 'all' ? { severity: sev } : {};
       } else if (toolName === 'inspect_finding') {
-        args = { findingId: currentFindingId };
+        args = currentFindingId ? { findingId: currentFindingId } : {};
       } else if (toolName === 'inspect_pattern') {
-        args = { patternType: currentFinding?.patternType || 'dialog' };
+        args = { patternType: this.selectedPatternFilter() };
       } else if (toolName === 'propose_remediation') {
-        args = { findingId: currentFindingId };
+        args = currentFindingId ? { findingId: currentFindingId } : {};
       } else if (toolName === 'generate_regression_test') {
-        args = { findingId: currentFindingId };
+        args = currentFindingId ? { findingId: currentFindingId } : {};
       } else if (toolName === 'apply_remediation') {
-        args = { findingId: currentFindingId };
+        args = currentFindingId ? { findingId: currentFindingId } : {};
       }
 
       const res = await this.webMcpHost.executeToolDirect(toolName, args);

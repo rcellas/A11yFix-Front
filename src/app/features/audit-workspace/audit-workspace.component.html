@@ -19,7 +19,7 @@
         aria-controls="webmcp-integrated-panel"
       >
         <span class="btn-icon">⚡</span>
-        <span>WebMCP Agent Tools ({{ tools.length }})</span>
+        <span class="btn-label">{{ showWebMcpPanel() ? 'Hide WebMCP Console' : 'Open WebMCP Console (8 Tools)' }}</span>
         <span class="chevron-icon">{{ showWebMcpPanel() ? '▲' : '▼' }}</span>
       </button>
     </div>
@@ -88,17 +88,42 @@
             [attr.aria-selected]="selectedWebMcpSubTab() === 'logs'"
             (click)="selectedWebMcpSubTab.set('logs')"
           >
-            📋 Live Telemetry & Logs ({{ logs.length }})
+            📋 Live Telemetry Logs ({{ logs.length }})
           </button>
         </div>
 
-        <div class="webmcp-status-pill">
-          <app-badge variant="success">WebMCP Host Active in document.modelContext</app-badge>
+        <div class="webmcp-controls-right">
+          <app-badge variant="success">Host Active in document.modelContext</app-badge>
+          <button class="close-console-btn" (click)="closeWebMcpPanel()" aria-label="Close WebMCP Console">✕ Close</button>
         </div>
       </div>
 
-      <!-- Subtab: Tools Catalog -->
+      <!-- Subtab: Tools Catalog with Multi-Options -->
       @if (selectedWebMcpSubTab() === 'tools') {
+        <!-- Interactive Multi-Options Bar -->
+        <div class="tool-options-bar">
+          <div class="option-item">
+            <label for="pattern-select" class="option-label">Inspect Pattern:</label>
+            <select id="pattern-select" class="option-select" [ngModel]="selectedPatternFilter()" (ngModelChange)="selectedPatternFilter.set($event)">
+              <option value="dialog">Dialog (Modal focus trap)</option>
+              <option value="tabs">Tabs (WAI-ARIA Tablist)</option>
+              <option value="accordion">Accordion / Disclosure</option>
+              <option value="combobox">Combobox (Autocomplete list)</option>
+            </select>
+          </div>
+
+          <div class="option-item">
+            <label for="severity-select" class="option-label">Findings Severity Filter:</label>
+            <select id="severity-select" class="option-select" [ngModel]="selectedSeverityFilter()" (ngModelChange)="selectedSeverityFilter.set($event)">
+              <option value="all">All Severities</option>
+              <option value="critical">Critical Only</option>
+              <option value="serious">Serious Only</option>
+              <option value="moderate">Moderate Only</option>
+              <option value="minor">Minor Only</option>
+            </select>
+          </div>
+        </div>
+
         <div class="tools-grid">
           @for (tool of tools; track tool.name) {
             <div class="tool-item-card">
@@ -110,7 +135,11 @@
                   </app-badge>
                 </div>
                 <app-button size="sm" variant="secondary" (clicked)="runQuickTool(tool.name)" ariaLabel="Run {{ tool.name }}">
-                  ▶ Test Tool
+                  @if (tool.name === 'create_audit') {
+                    ▶ Audit Whole Site
+                  } @else {
+                    ▶ Run Tool
+                  }
                 </app-button>
               </div>
               <p class="tool-summary">{{ tool.description }}</p>
@@ -148,7 +177,7 @@
               </div>
             } @empty {
               <div class="empty-logs">
-                <p>No WebMCP executions yet. Click "Test Tool" on any tool to trigger live telemetry.</p>
+                <p>No WebMCP executions yet. Click "Run Tool" on any tool to trigger live telemetry.</p>
               </div>
             }
           </div>
