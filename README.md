@@ -159,7 +159,123 @@ Navigate to `http://localhost:4200/` in your browser.
 
 ---
 
+## 🎬 How It Works — End-to-End Workflow
+
+### Step 1 — Submit a URL for Audit
+Enter any public URL in the audit input field and click **"Run Audit"**. A11yFix sends the URL to the backend (axe-core + Playwright headless), which returns a structured accessibility report.
+
+```
+URL Input → Audit API → axe-core + Playwright scan → WCAG 2.2 findings
+```
+
+### Step 2 — Review Findings
+The findings panel displays all violations sorted by severity (`critical`, `serious`, `moderate`, `minor`). Each finding shows:
+- **WCAG 2.2 Success Criterion** (e.g. `1.4.3 Contrast (Minimum)`) with conformance level (A / AA / AAA)
+- **Affected HTML element** and selector
+- **WAI-ARIA APG Pattern card** (auto-detected for interactive widgets)
+
+### Step 3 — AI Remediation Proposal
+Click **"Propose AI Fix"** on any finding. A11yFix generates a **contextual HTML diff** showing exactly what needs to change, referencing the real DOM snippet from the audit.
+
+### Step 4 — Human Approval (Mandatory Gate)
+Review the diff in the **CodeDiffViewer**. Click **"Approve"** to confirm the proposal. The approval is recorded in the application state — without it, the apply step is locked.
+
+### Step 5 — Apply & Verify
+After approval, **"Apply Fix"** executes the `apply_remediation` WebMCP tool. A Playwright regression test is also auto-generated to prevent future regressions.
+
+---
+
+## 🖥️ WebMCP Console — Calling Tools & Reading Results
+
+The **WebMCP Console** panel (right side of the workspace) exposes all 8 registered tools and a live telemetry log feed.
+
+### How to invoke a tool from the console
+
+1. Open the app at `http://localhost:4200/`
+2. Run an audit scan first so findings are loaded
+3. In the right panel, select the **"WebMCP Tools"** tab
+4. Choose a tool card (e.g. `get_findings`, `propose_remediation`, `inspect_pattern`)
+5. Fill in any required parameters shown in the input
+6. Click **"Run ➔"**
+
+### Reading results in the Telemetry Log
+
+Switch to the **"Telemetry Log"** subtab to see structured output from every tool call:
+
+```
+● SUCCESS   propose_remediation   19:42:03
+{
+  "findingId": "axe:color-contrast:0",
+  "originalHtml": "<span style=\"color: #aaa\">Text</span>",
+  "proposedHtml": "<span style=\"color: #0f172a; background: #ffffff\">Text</span>",
+  "explanation": "WCAG 2.2 SC 1.4.3 — contrast ratio raised from 2.1:1 to 15.3:1 (AAA)"
+}
+```
+
+| Pill colour | Meaning |
+|---|---|
+| 🟢 `SUCCESS` | Tool executed successfully |
+| 🔴 `DENIED` | `apply_remediation` called without human approval |
+| 🟡 `FAILED` | Tool error (network, invalid input, etc.) |
+
+### Inspecting WAI-ARIA Patterns from the console
+
+1. Select the **`inspect_pattern`** tool card
+2. In the **"Inspect Pattern:"** dropdown, choose one of the 9 patterns (or `All WAI-ARIA Patterns`)
+3. Click **"Run ➔"**
+4. The Telemetry Log shows the full W3C spec: required ARIA roles, attributes, and keyboard interaction requirements
+
+### Resetting the session
+
+Click **"Clear Logs"** or **"Reset"** — the console automatically returns to the **WebMCP Tools** tab, ready for the next interaction.
+
+---
+
+## 👥 Who Can Use A11yFix? — Three Access Layers
+
+A11yFix is designed so that **WebMCP is one channel, not the only one**. The same audit engine, approval barrier, and WCAG 2.2 results are accessible through three different interfaces depending on who is using the tool:
+
+| Who | How they interact | WebMCP needed? |
+| :--- | :--- | :--- |
+| **Non-developer** (designer, PM, QA analyst) | Uses the web UI directly: submits URL, browses findings, approves fixes | ❌ No |
+| **Developer / Accessibility engineer** | Uses the WebMCP Console inside the app to call tools, inspect patterns, and read telemetry logs | ✅ Optional |
+| **AI Agent** (Claude, Gemini, Copilot…) | Browser calls `document.modelContext` automatically — agent reads findings, proposes and applies fixes programmatically | ✅ Yes |
+
+> [!IMPORTANT]
+> Per the A11yFix design contract: **if WebMCP is unavailable or disabled in the browser, the application must function flawlessly for human users.** The GUI workflow is always the primary interface.
+
+### How each profile experiences the same workflow
+
+```
+Non-developer  ──►  Web UI (Audit → Findings → Approve → Apply)
+                         │
+Developer      ──►  WebMCP Console  ──►  same Facades & State
+                         │
+AI Agent       ──►  document.modelContext  ──►  same Facades & State
+                         │
+                    ┌────┴────┐
+                    │ 🔒 Human │  ◄── apply_remediation always requires
+                    │Approval │       a human to click "Approve" first,
+                    │ Barrier │       regardless of who triggered the tool
+                    └─────────┘
+```
+
+### For non-developers: no setup needed
+
+If you are not a developer and just want to audit a website:
+
+1. Open the deployed app (or `http://localhost:4200/`)
+2. Type a URL in the input field and press **"Run Audit"**
+3. Browse the findings list — severity badges and WCAG references are in plain language
+4. Click any finding to see the **AI-proposed fix** and the **before/after code diff**
+5. Click **"Approve"** if the fix looks correct, then **"Apply Fix"**
+
+The WebMCP Console panel is available but **entirely optional** for this workflow.
+
+---
+
 ## 🧪 Testing & Verification
+
 
 ### Unit & Component Tests (Vitest)
 
