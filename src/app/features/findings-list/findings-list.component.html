@@ -103,8 +103,8 @@
                 </div>
                 <code class="rule-id-compact">{{ finding.ruleId }}</code>
               </div>
-              <p class="compact-message" title="{{ finding.message }}">{{ finding.message }}</p>
-              <code class="compact-selector" title="{{ finding.selector }}">{{ finding.selector }}</code>
+              <p class="compact-message">{{ finding.message }}</p>
+              <code class="compact-selector">{{ finding.selector }}</code>
             </div>
           } @else {
             <!-- Detailed finding card -->
@@ -123,7 +123,7 @@
               </div>
 
               <p class="finding-message">{{ finding.message }}</p>
-              <code class="finding-selector" title="DOM Selector">{{ finding.selector }}</code>
+              <code class="finding-selector">{{ finding.selector }}</code>
             </app-card>
           }
         </div>
