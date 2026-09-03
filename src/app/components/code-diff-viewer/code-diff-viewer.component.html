@@ -11,7 +11,7 @@
     </button>
   </div>
 
-  <pre class="diff-pre"><code class="diff-code">
+  <div class="diff-body">
     @for (line of parsedLines(); track $index) {
       <div
         class="diff-line diff-line-{{ line.type }}"
@@ -23,5 +23,5 @@
         <span class="diff-content">{{ line.content }}</span>
       </div>
     }
-  </code></pre>
+  </div>
 </div>

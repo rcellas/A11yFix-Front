@@ -70,7 +70,7 @@
           [attr.aria-selected]="isSelected(finding)"
         >
           <app-card [elevated]="isSelected(finding)" [interactive]="true">
-            <div slot="header" class="finding-card-header">
+            <div card-header class="finding-card-header">
               <div class="badges-group">
                 <app-badge [variant]="finding.severity">{{ finding.severity | uppercase }}</app-badge>
                 @if (finding.wcagCriterion; as wcag) {

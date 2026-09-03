@@ -30,28 +30,31 @@ export class CodeDiffViewerComponent {
     let oldLine = 1;
     let newLine = 1;
 
-    return raw.split('\n').map((line) => {
-      if (line.startsWith('+') && !line.startsWith('+++')) {
-        return {
-          type: 'added',
-          content: line.substring(1),
-          lineNumberNew: newLine++
-        };
-      } else if (line.startsWith('-') && !line.startsWith('---')) {
-        return {
-          type: 'removed',
-          content: line.substring(1),
-          lineNumberOld: oldLine++
-        };
-      } else {
-        return {
-          type: 'context',
-          content: line.startsWith(' ') ? line.substring(1) : line,
-          lineNumberOld: oldLine++,
-          lineNumberNew: newLine++
-        };
-      }
-    });
+    return raw
+      .split('\n')
+      .filter((line) => line.length > 0 && !line.startsWith('---') && !line.startsWith('+++'))
+      .map((line) => {
+        if (line.startsWith('+')) {
+          return {
+            type: 'added',
+            content: line.substring(1),
+            lineNumberNew: newLine++
+          };
+        } else if (line.startsWith('-')) {
+          return {
+            type: 'removed',
+            content: line.substring(1),
+            lineNumberOld: oldLine++
+          };
+        } else {
+          return {
+            type: 'context',
+            content: line.startsWith(' ') ? line.substring(1) : line,
+            lineNumberOld: oldLine++,
+            lineNumberNew: newLine++
+          };
+        }
+      });
   });
 
   protected async copyToClipboard(): Promise<void> {

@@ -80,9 +80,15 @@
   outline-offset: 2px;
 }
 
-.finding-item.selected a11y-card {
+.finding-item.selected app-card {
   border-color: var(--color-primary);
-  background: var(--color-surface-hover);
+  border-left: 4px solid var(--color-primary);
+  background: #f8faff;
+  box-shadow: 0 4px 12px rgba(67, 56, 202, 0.12);
+}
+
+.finding-item.selected [card-header] {
+  background: #f1f5f9;
 }
 
 .finding-card-header {
