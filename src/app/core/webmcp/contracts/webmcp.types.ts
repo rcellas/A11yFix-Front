@@ -7,13 +7,15 @@ export interface WebMcpToolParameter {
   readonly enum?: readonly string[];
 }
 
+export interface ToolDeclaration {
+  readonly name: string;
+  readonly description: string;
+  readonly parameters?: Record<string, any>;
+  readonly execute: (params: Record<string, any>) => Promise<any> | any;
+}
+
 export interface ModelContext {
-  registerTool(tool: {
-    name: string;
-    description: string;
-    parameters?: Record<string, any>;
-    execute: (params: Record<string, any>) => Promise<any> | any;
-  }): void;
+  registerTool(tool: ToolDeclaration): void;
   unregisterTool?(name: string): void;
 }
 
