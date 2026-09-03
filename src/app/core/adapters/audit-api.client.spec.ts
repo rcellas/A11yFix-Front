@@ -20,7 +20,7 @@ describe('Audit API Clients', () => {
           provideHttpClientTesting(),
           {
             provide: API_CONFIG,
-            useValue: { baseUrl: 'https://api.a11yfix.dev' }
+            useValue: { baseUrl: 'http://localhost:3000' }
           }
         ]
       });
@@ -33,17 +33,83 @@ describe('Audit API Clients', () => {
       httpMock.verify();
     });
 
-    it('should issue POST /audits on startScan', async () => {
-      const scanPromise = firstValueFrom(client.startScan({ url: 'https://mysite.com' }));
+    it('should issue POST /audits and subsequent GET /audits/:id/findings on startScan', async () => {
+      const scanPromise = firstValueFrom(client.startScan({ url: 'https://dequeuniversity.com/demo/mars/' }));
 
-      const req = httpMock.expectOne('https://api.a11yfix.dev/audits');
-      expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual({ url: 'https://mysite.com' });
+      const postReq = httpMock.expectOne('http://localhost:3000/audits');
+      expect(postReq.request.method).toBe('POST');
+      expect(postReq.request.body).toEqual({ url: 'https://dequeuniversity.com/demo/mars/' });
 
-      req.flush({ id: 'audit-123', targetUrl: 'https://mysite.com', findings: [], summary: {} });
+      postReq.flush({
+        id: '7b2d5a34-29ef-4c4e-9b2f-38e55cf94a10',
+        url: 'https://dequeuniversity.com/demo/mars/',
+        status: 'created',
+        findingsCount: 1,
+        createdAt: '2026-09-03T14:45:00.000Z'
+      });
+
+      const getReq = httpMock.expectOne('http://localhost:3000/audits/7b2d5a34-29ef-4c4e-9b2f-38e55cf94a10/findings');
+      expect(getReq.request.method).toBe('GET');
+
+      getReq.flush([
+        {
+          id: 'c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c',
+          auditId: '7b2d5a34-29ef-4c4e-9b2f-38e55cf94a10',
+          patternType: 'DIALOG',
+          ruleId: 'pattern:dialog-accessible-name',
+          severity: 'serious',
+          message: 'Dialog must have an accessible name via aria-labelledby or aria-label.',
+          helpUrl: 'https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/',
+          targetSelector: {
+            cssSelector: '#modal-cookie',
+            role: 'dialog'
+          },
+          htmlSnippet: '<div id="modal-cookie" role="dialog" class="modal">...</div>',
+          createdAt: '2026-09-03T14:45:02.000Z'
+        }
+      ]);
 
       const result = await scanPromise;
-      expect(result.id).toBe('audit-123');
+      expect(result.id).toBe('7b2d5a34-29ef-4c4e-9b2f-38e55cf94a10');
+      expect(result.findings.length).toBe(1);
+      expect(result.findings[0].patternType).toBe('dialog');
+      expect(result.findings[0].severity).toBe('serious');
+      expect(result.findings[0].wcagCriterion?.id).toBe('4.1.2');
+      expect(result.summary.totalFindings).toBe(1);
+      expect(result.summary.seriousCount).toBe(1);
+    });
+
+    it('should propose remediation via POST /findings/:findingId/remediation', async () => {
+      const proposePromise = firstValueFrom(
+        client.proposeRemediation({
+          auditId: '7b2d5a34-29ef-4c4e-9b2f-38e55cf94a10',
+          findingId: 'c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c'
+        })
+      );
+
+      const req = httpMock.expectOne('http://localhost:3000/findings/c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c/remediation');
+      expect(req.request.method).toBe('POST');
+
+      req.flush([
+        {
+          id: '8f3e2a1b-4c5d-4e6f-9a0b-1c2d3e4f5a6b',
+          findingId: 'c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c',
+          status: 'proposed',
+          proposal: {
+            title: 'Add aria-labelledby referencing dialog heading',
+            description: 'Link the dialog container to its internal heading element ID.',
+            suggestedDiff: '+ aria-labelledby="dialog-title"',
+            suggestedAttributes: {
+              'aria-labelledby': 'dialog-title'
+            }
+          },
+          createdAt: '2026-09-03T14:46:00.000Z'
+        }
+      ]);
+
+      const res = await proposePromise;
+      expect(res.explanation).toContain('Add aria-labelledby referencing dialog heading');
+      expect(res.proposedHtml).toContain('aria-labelledby="dialog-title"');
     });
 
     it('should issue POST /apply-remediation when applying approved fix', async () => {
@@ -61,7 +127,7 @@ describe('Audit API Clients', () => {
       );
 
       const req = httpMock.expectOne(
-        'https://api.a11yfix.dev/audits/audit-123/findings/f-1/apply-remediation'
+        'http://localhost:3000/audits/audit-123/findings/f-1/apply-remediation'
       );
       expect(req.request.method).toBe('POST');
       expect(req.request.body.approvedBy).toBe('lead_engineer');

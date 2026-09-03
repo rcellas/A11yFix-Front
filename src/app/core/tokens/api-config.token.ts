@@ -1,4 +1,5 @@
 import { InjectionToken } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 export interface ApiConfig {
   readonly baseUrl: string;
@@ -7,6 +8,7 @@ export interface ApiConfig {
 export const API_CONFIG = new InjectionToken<ApiConfig>('API_CONFIG', {
   providedIn: 'root',
   factory: () => ({
-    baseUrl: '/api'
+    baseUrl: environment.apiUrl || 'http://localhost:3000'
   })
 });
+
