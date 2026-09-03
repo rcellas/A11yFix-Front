@@ -1,10 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { AuditFacade } from '../../../facades/audit.facade';
+import { Finding } from '../../../models';
 import { RemediationFacade } from '../../../facades/remediation.facade';
 import { BaseWebMcpTool } from '../base-tool';
 
 export interface ApplyRemediationInput {
-  readonly findingId: string;
+  readonly findingId?: string;
 }
 
 @Injectable({
@@ -15,19 +16,26 @@ export class ApplyRemediationTool extends BaseWebMcpTool<ApplyRemediationInput, 
   readonly description = 'Apply an approved remediation. STRICTLY fails if human approval has not been granted.';
   readonly tier = 'WRITE' as const;
   override readonly parameters = {
-    findingId: { type: 'string', description: 'ID of the finding to apply remediation for', required: true }
+    findingId: { type: 'string', description: 'ID of the finding to apply remediation for (optional, defaults to selected/first finding)' }
   };
 
   private readonly auditFacade = inject(AuditFacade);
   private readonly remediationFacade = inject(RemediationFacade);
 
   async execute(input: ApplyRemediationInput): Promise<any> {
-    if (!input?.findingId) {
-      throw new Error('findingId is required');
-    }
     const report = this.auditFacade.report();
-    if (!report) {
-      throw new Error('No active audit found.');
+    if (!report || report.findings.length === 0) {
+      throw new Error('No active audit findings found. Please run an audit scan first.');
+    }
+
+    const targetId = input?.findingId;
+    const finding =
+      (targetId ? report.findings.find((f: Finding) => f.id === targetId) : undefined) ??
+      this.auditFacade.selectedFinding() ??
+      report.findings[0];
+
+    if (!finding) {
+      throw new Error(`Finding not found: ${targetId || 'active'}`);
     }
 
     // MANDATORY HUMAN APPROVAL BARRIER
@@ -42,7 +50,7 @@ export class ApplyRemediationTool extends BaseWebMcpTool<ApplyRemediationInput, 
     return {
       success: result.success,
       appliedAt: result.appliedAt,
-      findingId: input.findingId
+      findingId: finding.id
     };
   }
 }

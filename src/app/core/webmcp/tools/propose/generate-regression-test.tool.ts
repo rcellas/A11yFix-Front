@@ -5,7 +5,7 @@ import { PlaywrightGeneratorService } from '../../services/playwright-generator.
 import { BaseWebMcpTool } from '../base-tool';
 
 export interface GenerateRegressionTestInput {
-  readonly findingId: string;
+  readonly findingId?: string;
 }
 
 @Injectable({
@@ -16,29 +16,35 @@ export class GenerateRegressionTestTool extends BaseWebMcpTool<GenerateRegressio
   readonly description = 'Generate an automated Playwright accessibility regression test snippet for a finding.';
   readonly tier = 'PROPOSE' as const;
   override readonly parameters = {
-    findingId: { type: 'string', description: 'ID of the finding to generate regression test for', required: true }
+    findingId: { type: 'string', description: 'ID of the finding to generate regression test for (optional, defaults to selected/first finding)' }
   };
 
   private readonly auditFacade = inject(AuditFacade);
   private readonly testGenerator = inject(PlaywrightGeneratorService);
 
   execute(input: GenerateRegressionTestInput): any {
-    if (!input?.findingId) {
-      throw new Error('findingId is required');
-    }
     const report = this.auditFacade.report();
-    const finding = report?.findings.find((f: Finding) => f.id === input.findingId);
+    if (!report || report.findings.length === 0) {
+      throw new Error('No active audit findings found. Please run an audit scan first.');
+    }
+
+    const targetId = input?.findingId;
+    const finding =
+      (targetId ? report.findings.find((f: Finding) => f.id === targetId) : undefined) ??
+      this.auditFacade.selectedFinding() ??
+      report.findings[0];
+
     if (!finding) {
-      throw new Error(`Finding not found: ${input.findingId}`);
+      throw new Error(`Finding not found: ${targetId || 'active'}`);
     }
 
     const testSnippet = this.testGenerator.generateTestSnippet(
-      report ? report.targetUrl : 'https://example.com',
+      report.targetUrl || 'https://example.com',
       finding
     );
 
     return {
-      findingId: input.findingId,
+      findingId: finding.id,
       ruleId: finding.ruleId,
       playwrightTest: testSnippet
     };
