@@ -218,20 +218,24 @@ export class HttpAuditApiClient implements AuditApiClient {
             .map((l) => l.replace(/^\+\s*/, ''))
             .join(' ');
 
-          return {
+          const result: FindingRemediation = {
             originalHtml: '<div role="dialog" class="modal-container"></div>',
             proposedHtml: diffLines || `<div role="dialog" ${proposal.suggestedDiff || ''}></div>`,
             explanation: `${proposal.title}: ${proposal.description}`,
             apgPattern: 'dialog'
           };
+          return result;
         }),
         catchError(() => {
-          return of({
+          const fallback: FindingRemediation = {
             originalHtml: '<div role="dialog" class="modal-container">\n  <h2>Cookie Settings</h2>\n</div>',
-            proposedHtml: '<div role="dialog" aria-modal="true" aria-labelledby="dialog-title" class="modal-container" cdkTrapFocus>\n  <h2 id="dialog-title">Cookie Settings</h2>\n</div>',
-            explanation: 'Apply aria-modal="true", aria-labelledby referencing the title, and trap focus inside the dialog per WAI-ARIA APG standard.',
+            proposedHtml:
+              '<div role="dialog" aria-modal="true" aria-labelledby="dialog-title" class="modal-container" cdkTrapFocus>\n  <h2 id="dialog-title">Cookie Settings</h2>\n</div>',
+            explanation:
+              'Apply aria-modal="true", aria-labelledby referencing the title, and trap focus inside the dialog per WAI-ARIA APG standard.',
             apgPattern: 'dialog'
-          });
+          };
+          return of(fallback);
         })
       );
   }
