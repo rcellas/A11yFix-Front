@@ -76,9 +76,10 @@
 
 .finding-item {
   cursor: pointer;
-  border-radius: var(--radius-md);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border-radius: var(--radius-lg, 12px);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   outline: none;
+  display: block;
 }
 
 .finding-item:focus-visible {
@@ -86,15 +87,27 @@
   outline-offset: 2px;
 }
 
-.finding-item.selected app-card {
-  border-color: var(--color-primary);
-  border-left: 4px solid var(--color-primary);
+.finding-item:hover app-card {
+  border-color: #6366f1;
+  background: #ffffff;
+  box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.22), 0 4px 10px -2px rgba(99, 102, 241, 0.12);
+  transform: translateY(-2px);
+}
+
+.finding-item:hover [card-header] {
   background: #f8faff;
-  box-shadow: 0 4px 12px rgba(67, 56, 202, 0.12);
+}
+
+.finding-item.selected app-card {
+  border-color: var(--color-primary, #4338ca);
+  border-left: 4px solid var(--color-primary, #4338ca);
+  background: #f8faff;
+  box-shadow: 0 0 0 2px rgba(67, 56, 202, 0.25), 0 8px 20px -4px rgba(67, 56, 202, 0.18);
+  transform: translateY(-1px);
 }
 
 .finding-item.selected [card-header] {
-  background: #f1f5f9;
+  background: #eff4ff;
 }
 
 .finding-card-header {

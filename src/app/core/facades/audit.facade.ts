@@ -39,36 +39,45 @@ export class AuditFacade {
   readonly filter = this._filter.asReadonly();
   readonly selectedFindingId = this._selectedFindingId.asReadonly();
 
-  // Filtered findings computed signal
+  // Filtered findings computed signal (ordered by severity priority)
   readonly filteredFindings = computed(() => {
     const findings = this.stateMachine.findings();
     const filter = this._filter();
 
-    return findings.filter((finding) => {
-      // Severity filter
-      if (filter.severity && filter.severity !== 'all' && finding.severity !== filter.severity) {
-        return false;
-      }
+    const severityRank: Record<string, number> = {
+      critical: 0,
+      serious: 1,
+      moderate: 2,
+      minor: 3
+    };
 
-      // WCAG Level filter
-      if (filter.wcagLevel && filter.wcagLevel !== 'all' && finding.wcagCriterion?.level !== filter.wcagLevel) {
-        return false;
-      }
-
-      // Search query filter
-      if (filter.searchQuery && filter.searchQuery.trim().length > 0) {
-        const query = filter.searchQuery.toLowerCase();
-        const matchesMessage = finding.message.toLowerCase().includes(query);
-        const matchesRule = finding.ruleId.toLowerCase().includes(query);
-        const matchesSelector = finding.selector.toLowerCase().includes(query);
-        const matchesWcag = finding.wcagCriterionId.toLowerCase().includes(query);
-        if (!matchesMessage && !matchesRule && !matchesSelector && !matchesWcag) {
+    return findings
+      .filter((finding) => {
+        // Severity filter
+        if (filter.severity && filter.severity !== 'all' && finding.severity !== filter.severity) {
           return false;
         }
-      }
 
-      return true;
-    });
+        // WCAG Level filter
+        if (filter.wcagLevel && filter.wcagLevel !== 'all' && finding.wcagCriterion?.level !== filter.wcagLevel) {
+          return false;
+        }
+
+        // Search query filter
+        if (filter.searchQuery && filter.searchQuery.trim().length > 0) {
+          const query = filter.searchQuery.toLowerCase();
+          const matchesMessage = finding.message.toLowerCase().includes(query);
+          const matchesRule = finding.ruleId.toLowerCase().includes(query);
+          const matchesSelector = finding.selector.toLowerCase().includes(query);
+          const matchesWcag = finding.wcagCriterionId.toLowerCase().includes(query);
+          if (!matchesMessage && !matchesRule && !matchesSelector && !matchesWcag) {
+            return false;
+          }
+        }
+
+        return true;
+      })
+      .sort((a, b) => (severityRank[a.severity] ?? 99) - (severityRank[b.severity] ?? 99));
   });
 
   readonly selectedFinding = computed(() => {
