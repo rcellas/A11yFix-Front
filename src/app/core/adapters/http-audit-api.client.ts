@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { map, Observable, of, switchMap } from 'rxjs';
+import { catchError, filter, forkJoin, map, Observable, of, switchMap, take, timer } from 'rxjs';
 import {
   AuditReport,
   calculateAuditSummary,
@@ -29,7 +29,7 @@ export interface BackendAuditDto {
   readonly findingsCount?: number;
   readonly createdAt?: string;
   readonly timestamp?: string;
-  readonly findings?: readonly Finding[];
+  readonly findings?: readonly unknown[];
   readonly summary?: unknown;
 }
 
@@ -70,6 +70,18 @@ export interface BackendRemediationDto {
   readonly createdAt?: string;
 }
 
+function extractFindingsArray(raw: unknown): readonly BackendFindingDto[] {
+  if (Array.isArray(raw)) return raw as BackendFindingDto[];
+  if (raw && typeof raw === 'object') {
+    const obj = raw as Record<string, unknown>;
+    if (Array.isArray(obj['findings'])) return obj['findings'] as BackendFindingDto[];
+    if (Array.isArray(obj['data'])) return obj['data'] as BackendFindingDto[];
+    if (Array.isArray(obj['items'])) return obj['items'] as BackendFindingDto[];
+    if (Array.isArray(obj['violations'])) return obj['violations'] as BackendFindingDto[];
+  }
+  return [];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -83,56 +95,85 @@ export class HttpAuditApiClient implements AuditApiClient {
 
   startScan(request: ScanRequest): Observable<AuditReport> {
     return this.http.post<BackendAuditDto>(`${this.baseUrl}/audits`, request).pipe(
-      switchMap((audit) => {
-        // If the backend already returns full findings in the POST response (e.g. mock / test fixture)
-        if (audit.findings && Array.isArray(audit.findings)) {
-          return of(this.normalizeAuditReport(audit, audit.findings));
+      switchMap((createdAudit) => {
+        const auditId = createdAudit.id || (createdAudit as unknown as { auditId?: string }).auditId;
+        if (!auditId) {
+          return of(this.normalizeAuditReport(createdAudit, []));
         }
 
-        // Otherwise fetch findings from GET /audits/:id/findings
-        return this.http
-          .get<readonly BackendFindingDto[]>(`${this.baseUrl}/audits/${audit.id}/findings`)
-          .pipe(
-            map((findingsDto) => {
-              const domainFindings = (findingsDto || []).map((dto) => this.mapFindingDtoToDomain(dto));
-              return this.normalizeAuditReport(audit, domainFindings);
+        // Check if findings are already included in POST response
+        const directFindings = extractFindingsArray(createdAudit.findings);
+        if (directFindings.length > 0) {
+          const domainFindings = directFindings.map((dto) => this.mapFindingDtoToDomain(dto));
+          return of(this.normalizeAuditReport(createdAudit, domainFindings));
+        }
+
+        // Poll backend until status is completed or findings are returned (up to 15 attempts)
+        return timer(0, 1000).pipe(
+          switchMap(() =>
+            forkJoin({
+              audit: this.http
+                .get<BackendAuditDto>(`${this.baseUrl}/audits/${auditId}`)
+                .pipe(catchError(() => of(createdAudit))),
+              findingsRaw: this.http
+                .get<unknown>(`${this.baseUrl}/audits/${auditId}/findings`)
+                .pipe(catchError(() => of([])))
             })
-          );
+          ),
+          map(({ audit, findingsRaw }) => {
+            const findingsList = extractFindingsArray(findingsRaw);
+            const status = (audit.status || '').toLowerCase();
+            const isFinished =
+              status === 'completed' ||
+              status === 'finished' ||
+              status === 'failed' ||
+              findingsList.length > 0;
+
+            return {
+              audit: { ...createdAudit, ...audit },
+              findings: findingsList,
+              isFinished
+            };
+          }),
+          filter((res, index) => res.isFinished || index >= 10),
+          take(1),
+          map(({ audit, findings }) => {
+            const domainFindings = findings.map((dto) => this.mapFindingDtoToDomain(dto));
+            return this.normalizeAuditReport(audit, domainFindings);
+          })
+        );
       })
     );
   }
 
   getAudit(auditId: string): Observable<AuditReport> {
-    return this.http.get<BackendAuditDto>(`${this.baseUrl}/audits/${auditId}`).pipe(
-      switchMap((audit) => {
-        if (audit.findings && Array.isArray(audit.findings)) {
-          return of(this.normalizeAuditReport(audit, audit.findings));
-        }
-
-        return this.http
-          .get<readonly BackendFindingDto[]>(`${this.baseUrl}/audits/${auditId}/findings`)
-          .pipe(
-            map((findingsDto) => {
-              const domainFindings = (findingsDto || []).map((dto) => this.mapFindingDtoToDomain(dto));
-              return this.normalizeAuditReport(audit, domainFindings);
-            })
-          );
+    return forkJoin({
+      audit: this.http
+        .get<BackendAuditDto>(`${this.baseUrl}/audits/${auditId}`)
+        .pipe(catchError(() => of({ id: auditId }))),
+      findingsRaw: this.http
+        .get<unknown>(`${this.baseUrl}/audits/${auditId}/findings`)
+        .pipe(catchError(() => of([])))
+    }).pipe(
+      map(({ audit, findingsRaw }) => {
+        const findingsList = extractFindingsArray(findingsRaw);
+        const domainFindings = findingsList.map((dto) => this.mapFindingDtoToDomain(dto));
+        return this.normalizeAuditReport(audit, domainFindings);
       })
     );
   }
 
   getFinding(auditId: string, findingId: string): Observable<Finding> {
-    return this.http
-      .get<readonly BackendFindingDto[]>(`${this.baseUrl}/audits/${auditId}/findings`)
-      .pipe(
-        map((findings) => {
-          const matched = (findings || []).find((f) => f.id === findingId);
-          if (matched) {
-            return this.mapFindingDtoToDomain(matched);
-          }
-          throw new Error(`Finding with ID ${findingId} not found in audit ${auditId}`);
-        })
-      );
+    return this.http.get<unknown>(`${this.baseUrl}/audits/${auditId}/findings`).pipe(
+      map((raw) => {
+        const findings = extractFindingsArray(raw);
+        const matched = findings.find((f) => f.id === findingId);
+        if (matched) {
+          return this.mapFindingDtoToDomain(matched);
+        }
+        throw new Error(`Finding with ID ${findingId} not found in audit ${auditId}`);
+      })
+    );
   }
 
   proposeRemediation(request: ProposeRemediationRequest): Observable<FindingRemediation> {
