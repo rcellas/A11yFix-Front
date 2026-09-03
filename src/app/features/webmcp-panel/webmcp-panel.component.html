@@ -50,7 +50,7 @@
                   {{ tool.tier }}
                 </app-badge>
               </div>
-              <app-button size="sm" variant="secondary" (btnClick)="runQuickTool(tool.name)" ariaLabel="Run {{ tool.name }}">
+              <app-button size="sm" variant="secondary" (clicked)="runQuickTool(tool.name)" ariaLabel="Run {{ tool.name }}">
                 ▶ Test Tool
               </app-button>
             </div>

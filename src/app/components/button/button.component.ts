@@ -22,6 +22,7 @@ export class ButtonComponent {
   readonly ariaLabel = input<string | undefined>(undefined);
 
   readonly clicked = output<MouseEvent>();
+  readonly btnClick = output<MouseEvent>();
 
   protected readonly isEffectivelyDisabled = computed(() => this.disabled() || this.loading());
 
@@ -36,5 +37,6 @@ export class ButtonComponent {
       return;
     }
     this.clicked.emit(event);
+    this.btnClick.emit(event);
   }
 }

@@ -35,18 +35,27 @@ export class WebMcpPanelComponent {
     try {
       let args: Record<string, unknown> = {};
 
+      const currentReport = this.auditFacade.report();
+      const currentFinding =
+        this.auditFacade.selectedFinding() || (currentReport?.findings && currentReport.findings[0]);
+      const currentFindingId = currentFinding ? currentFinding.id : 'audit-1-f1';
+
       if (toolName === 'create_audit') {
         args = { url: 'https://dequeuniversity.com/demo/mars/' };
+      } else if (toolName === 'get_audit') {
+        args = { auditId: currentReport?.id || 'audit-1' };
       } else if (toolName === 'get_findings') {
         args = { severity: 'critical' };
+      } else if (toolName === 'inspect_finding') {
+        args = { findingId: currentFindingId };
       } else if (toolName === 'inspect_pattern') {
-        args = { patternType: 'dialog' };
+        args = { patternType: currentFinding?.patternType || 'dialog' };
+      } else if (toolName === 'propose_remediation') {
+        args = { findingId: currentFindingId };
       } else if (toolName === 'generate_regression_test') {
-        const finding = this.auditFacade.selectedFinding() || this.auditFacade.report()?.findings[0];
-        args = { findingId: finding ? finding.id : 'audit-1-f1' };
+        args = { findingId: currentFindingId };
       } else if (toolName === 'apply_remediation') {
-        const finding = this.auditFacade.selectedFinding() || this.auditFacade.report()?.findings[0];
-        args = { findingId: finding ? finding.id : 'audit-1-f1' };
+        args = { findingId: currentFindingId };
       }
 
       const res = await this.webMcpHost.executeToolDirect(toolName, args);
