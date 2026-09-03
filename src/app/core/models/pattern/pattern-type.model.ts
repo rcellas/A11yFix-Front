@@ -1,7 +1,16 @@
 /**
- * Supported WAI-ARIA APG Pattern Types
+ * Supported WAI-ARIA APG Pattern Types (9 Patterns)
  */
-export type PatternType = 'dialog' | 'tabs' | 'accordion' | 'combobox';
+export type PatternType =
+  | 'dialog'
+  | 'tabs'
+  | 'disclosure'
+  | 'combobox'
+  | 'menu_button'
+  | 'breadcrumb'
+  | 'tooltip'
+  | 'alert_dialog'
+  | 'accordion';
 
 export interface PatternRule {
   readonly id: string;

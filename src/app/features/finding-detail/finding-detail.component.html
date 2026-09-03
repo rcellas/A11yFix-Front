@@ -131,12 +131,34 @@
               >
                 Apply Fix to Codebase
               </app-button>
-            } @else if (remediationFacade.isApplied()) {
-              <p class="applied-success">
-                Fix applied cleanly. Run verification to confirm zero regressions.
-              </p>
+            } @else if (remediationFacade.isApplied() || remediationFacade.isVerified()) {
+              <div class="verification-action-box">
+                <p class="applied-success">
+                  ✓ Fix applied cleanly to source code.
+                </p>
+                <app-button
+                  variant="primary"
+                  size="md"
+                  [disabled]="isVerifying()"
+                  (btnClick)="verifyInteractiveFix()"
+                  ariaLabel="Verify interactive WAI-ARIA and WCAG 2.2 criteria"
+                >
+                  @if (isVerifying()) {
+                    Verifying interactive behavior...
+                  } @else {
+                    🔍 Verify Interactive Behavior
+                  }
+                </app-button>
+              </div>
             }
           </div>
+
+          @if (verificationDetails(); as vDetails) {
+            <div class="verification-result-card" [class.passed]="remediationFacade.isVerified()" role="status">
+              <span class="v-icon">🛡️</span>
+              <span class="v-text">{{ vDetails }}</span>
+            </div>
+          }
         </div>
       </section>
     } @else {

@@ -22,6 +22,8 @@ export class FindingDetailComponent {
   readonly feedbackMessage = signal<string | null>(null);
   readonly copyStatus = signal<string | null>(null);
   readonly isGeneratingRemediation = signal<boolean>(false);
+  readonly isVerifying = signal<boolean>(false);
+  readonly verificationDetails = signal<string | null>(null);
 
   readonly currentRemediation = computed(() => {
     return this.remediationFacade.proposedRemediation() ?? this.selectedFinding()?.remediation ?? null;
@@ -51,6 +53,7 @@ export class FindingDetailComponent {
         this.remediationFacade.initializeForFinding(finding.id, finding.remediation);
         this.feedbackMessage.set(null);
         this.copyStatus.set(null);
+        this.verificationDetails.set(null);
       }
     });
   }
@@ -97,6 +100,24 @@ export class FindingDetailComponent {
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Error applying remediation';
       this.feedbackMessage.set(msg);
+    }
+  }
+
+  async verifyInteractiveFix(): Promise<void> {
+    const finding = this.selectedFinding();
+    const report = this.auditFacade.report();
+    if (!finding) return;
+
+    this.isVerifying.set(true);
+    try {
+      const result = await this.remediationFacade.verifyFix(report?.id || 'current-audit', finding.id);
+      this.verificationDetails.set(
+        result.passed
+          ? `✓ Verification Passed: ${result.details}`
+          : `✕ Verification Failed: ${result.details}`
+      );
+    } finally {
+      this.isVerifying.set(false);
     }
   }
 

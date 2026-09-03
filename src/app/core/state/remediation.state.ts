@@ -38,6 +38,16 @@ export interface RemediationAppliedState {
   readonly appliedAt: string;
 }
 
+export interface RemediationVerifiedState {
+  readonly status: 'verified';
+  readonly findingId: string;
+  readonly remediation: FindingRemediation;
+  readonly verificationResult: {
+    readonly passed: boolean;
+    readonly details: string;
+  };
+}
+
 export interface RemediationRejectedState {
   readonly status: 'rejected';
   readonly findingId: string;
@@ -51,6 +61,7 @@ export type RemediationState =
   | RemediationApprovedState
   | RemediationApplyingState
   | RemediationAppliedState
+  | RemediationVerifiedState
   | RemediationRejectedState;
 
 /**
@@ -70,6 +81,7 @@ export class RemediationStateMachine {
   readonly isAwaitingApproval = computed(() => this._state().status === 'awaiting_approval');
   readonly isApproved = computed(() => this._state().status === 'approved');
   readonly isApplied = computed(() => this._state().status === 'applied');
+  readonly isVerified = computed(() => this._state().status === 'verified');
   readonly isRejected = computed(() => this._state().status === 'rejected');
 
   readonly proposedRemediation = computed(() => {
@@ -78,7 +90,8 @@ export class RemediationStateMachine {
       s.status === 'awaiting_approval' ||
       s.status === 'approved' ||
       s.status === 'applying' ||
-      s.status === 'applied'
+      s.status === 'applied' ||
+      s.status === 'verified'
     ) {
       return s.remediation;
     }
@@ -156,6 +169,22 @@ export class RemediationStateMachine {
       findingId: current.findingId,
       remediation: current.remediation,
       appliedAt: new Date().toISOString()
+    });
+  }
+
+  markVerified(result: { passed: boolean; details: string }): void {
+    const current = this._state();
+    const rem = this.proposedRemediation() ?? {
+      originalHtml: '',
+      proposedHtml: '',
+      explanation: 'Verified remediation'
+    };
+
+    this._state.set({
+      status: 'verified',
+      findingId: current.findingId,
+      remediation: rem,
+      verificationResult: result
     });
   }
 }

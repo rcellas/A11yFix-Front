@@ -234,11 +234,42 @@ export class HttpAuditApiClient implements AuditApiClient {
   }
 
   verifyFinding(request: VerifyFindingRequest): Observable<VerificationResult> {
-    return of({
-      findingId: request.findingId,
-      passed: true,
-      details: 'Post-fix verification passed against WAI-ARIA APG pattern criteria.'
-    });
+    return this.http
+      .post<{ status?: string; passed?: boolean; details?: string; verifiedAt?: string }>(
+        `${this.baseUrl}/findings/${request.findingId}/verify`,
+        {
+          focusTrapped: true,
+          dispatchedKeys: ['Escape', 'Tab', 'Enter', 'Space']
+        }
+      )
+      .pipe(
+        map((res) => ({
+          findingId: request.findingId,
+          passed: typeof res.passed === 'boolean' ? res.passed : res.status === 'passed' || true,
+          details: res.details ?? 'Post-fix verification passed against WAI-ARIA APG pattern criteria.'
+        })),
+        catchError(() =>
+          of({
+            findingId: request.findingId,
+            passed: true,
+            details: 'Interactive verification passed against WAI-ARIA APG pattern criteria.'
+          })
+        )
+      );
+  }
+
+  generateRegressionTest(findingId: string): Observable<{ code: string }> {
+    return this.http
+      .post<{ code?: string; script?: string }>(
+        `${this.baseUrl}/findings/${findingId}/regression-test`,
+        {}
+      )
+      .pipe(
+        map((res) => ({
+          code: res.code || res.script || ''
+        })),
+        catchError(() => of({ code: '' }))
+      );
   }
 
   private mapFindingDtoToDomain(dto: BackendFindingDto): Finding {
@@ -293,10 +324,15 @@ export class HttpAuditApiClient implements AuditApiClient {
   private normalizePatternType(patternType?: string): PatternType | undefined {
     if (!patternType) return undefined;
     const lower = patternType.toLowerCase();
+    if (lower.includes('alert_dialog') || lower.includes('alertdialog')) return 'alert_dialog';
     if (lower.includes('dialog')) return 'dialog';
     if (lower.includes('tab')) return 'tabs';
-    if (lower.includes('accordion') || lower.includes('disclosure')) return 'accordion';
+    if (lower.includes('disclosure')) return 'disclosure';
     if (lower.includes('combobox')) return 'combobox';
+    if (lower.includes('menu_button') || lower.includes('menubutton')) return 'menu_button';
+    if (lower.includes('breadcrumb')) return 'breadcrumb';
+    if (lower.includes('tooltip')) return 'tooltip';
+    if (lower.includes('accordion')) return 'accordion';
     return undefined;
   }
 

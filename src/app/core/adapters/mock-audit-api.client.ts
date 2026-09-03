@@ -151,4 +151,10 @@ export class MockAuditApiClient implements AuditApiClient {
       details: 'Automated verification check passed with zero accessibility violations.'
     }).pipe(delay(350));
   }
+
+  generateRegressionTest(findingId: string): Observable<{ code: string }> {
+    return of({
+      code: `import { test, expect } from '@playwright/test';\n\ntest('Accessibility regression test for ${findingId}', async ({ page }) => {\n  await page.goto('https://example.com');\n  await expect(page.locator('body')).toBeVisible();\n});`
+    }).pipe(delay(200));
+  }
 }

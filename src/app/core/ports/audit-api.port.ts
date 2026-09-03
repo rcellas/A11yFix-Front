@@ -39,6 +39,7 @@ export interface AuditApiClient {
   proposeRemediation(request: ProposeRemediationRequest): Observable<FindingRemediation>;
   applyRemediation(request: ApplyRemediationRequest): Observable<{ success: boolean; appliedAt: string }>;
   verifyFinding(request: VerifyFindingRequest): Observable<VerificationResult>;
+  generateRegressionTest(findingId: string): Observable<{ code: string }>;
 }
 
 export const AUDIT_API_CLIENT = new InjectionToken<AuditApiClient>('AUDIT_API_CLIENT');

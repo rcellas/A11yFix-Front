@@ -160,8 +160,13 @@
             <select id="pattern-select" class="option-select" [ngModel]="selectedPatternFilter()" (ngModelChange)="selectedPatternFilter.set($event)">
               <option value="dialog">Dialog (Modal focus trap)</option>
               <option value="tabs">Tabs (WAI-ARIA Tablist)</option>
-              <option value="accordion">Accordion / Disclosure</option>
+              <option value="disclosure">Disclosure (Expandable section)</option>
               <option value="combobox">Combobox (Autocomplete list)</option>
+              <option value="menu_button">Menu Button (Popup menu)</option>
+              <option value="breadcrumb">Breadcrumb (Navigation trail)</option>
+              <option value="tooltip">Tooltip (Contextual popup)</option>
+              <option value="alert_dialog">Alert Dialog (Urgent confirmation)</option>
+              <option value="accordion">Accordion (Multi-section expandable)</option>
             </select>
           </div>
 
