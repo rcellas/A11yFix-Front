@@ -60,6 +60,7 @@ export interface BackendRemediationProposalDto {
   readonly description: string;
   readonly suggestedDiff?: string;
   readonly suggestedAttributes?: Record<string, string>;
+  readonly suggestedPattern?: PatternType;
 }
 
 export interface BackendRemediationDto {

@@ -13,7 +13,6 @@ import { WebMcpHostService } from '../../core/webmcp/services/webmcp-host.servic
     FormsModule,
     BadgeComponent,
     ButtonComponent,
-    CardComponent,
     TextFieldComponent,
     UpperCasePipe,
     JsonPipe
