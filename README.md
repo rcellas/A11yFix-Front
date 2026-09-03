@@ -17,7 +17,7 @@ The A11yFix platform is decoupled into two dedicated repositories following clea
 
 | Repository | Role | Tech Stack | Repository URL |
 | :--- | :--- | :--- | :--- |
-| **`A11yFix-Front`** *(This repo)* | Browser WebMCP Host, Signal Facades, WAI-ARIA Pattern Engine, Accessible UI | Angular 21, Signals, SCSS Tokens, Vitest, Storybook | [Frontend Repository](https://github.com/rcellas/A11yFix-Front) |
+| **`A11yFix-Front`** *(This repo)* | Browser WebMCP Host, Signal Facades, WAI-ARIA Pattern Engine, Accessible UI | Angular 22, Signals, SCSS Tokens, Vitest, Storybook | [Frontend Repository](https://github.com/rcellas/A11yFix-Front) |
 | **`A11yFix-back`** | Audit Scanner API, Playwright Headless Runner, axe-core engine, LLM Remediation | NestJS / Express, Playwright, axe-core, TypeScript | [Backend Repository](https://github.com/rcellas/A11yFix-back) |
 
 ---
