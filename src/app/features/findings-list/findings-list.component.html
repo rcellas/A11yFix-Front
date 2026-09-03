@@ -87,8 +87,7 @@
           [class.compact]="densityMode() === 'compact'"
           [class.selected]="isSelected(finding)"
           (click)="selectFinding(finding)"
-          (keydown.enter)="selectFinding(finding)"
-          (keydown.space)="selectFinding(finding)"
+          (keydown)="onKeyDown($event, $index)"
           tabindex="0"
           [attr.aria-selected]="isSelected(finding)"
         >

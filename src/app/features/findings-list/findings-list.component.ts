@@ -55,4 +55,34 @@ export class FindingsListComponent {
   isSelected(finding: Finding): boolean {
     return this.auditFacade.selectedFinding()?.id === finding.id;
   }
+
+  onKeyDown(event: KeyboardEvent, index: number): void {
+    const list = this.auditFacade.filteredFindings();
+    if (list.length === 0) return;
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      const nextIndex = Math.min(index + 1, list.length - 1);
+      this.selectFinding(list[nextIndex]);
+      this.focusItemByIndex(nextIndex);
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      const prevIndex = Math.max(index - 1, 0);
+      this.selectFinding(list[prevIndex]);
+      this.focusItemByIndex(prevIndex);
+    } else if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.selectFinding(list[index]);
+    }
+  }
+
+  private focusItemByIndex(index: number): void {
+    setTimeout(() => {
+      const items = document.querySelectorAll<HTMLElement>('.finding-item');
+      if (items[index]) {
+        items[index].focus();
+        items[index].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+    });
+  }
 }

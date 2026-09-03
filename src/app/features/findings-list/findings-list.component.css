@@ -40,6 +40,7 @@
   border-radius: var(--radius-sm);
   padding: 2px;
   gap: 2px;
+  flex-shrink: 0;
 }
 
 .density-btn {
@@ -48,9 +49,10 @@
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-secondary);
-  padding: 0.2rem 0.6rem;
+  padding: 0.2rem 0.5rem;
   border-radius: 4px;
   cursor: pointer;
+  white-space: nowrap;
   transition: all 0.15s ease;
 }
 
