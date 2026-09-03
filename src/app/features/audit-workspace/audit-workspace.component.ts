@@ -74,16 +74,22 @@ export class AuditWorkspaceComponent {
   }
 
   async startAudit(): Promise<void> {
-    const url = this.urlInput().trim();
+    let url = this.urlInput().trim();
     if (!url) {
       this.errorMessage.set('Please provide a valid website URL to scan.');
       return;
     }
 
+    // Auto-normalize URLs missing protocol (e.g., "rociocejudo.dev" -> "https://rociocejudo.dev")
+    if (!/^https?:\/\//i.test(url)) {
+      url = `https://${url}`;
+      this.urlInput.set(url);
+    }
+
     try {
       new URL(url);
     } catch {
-      this.errorMessage.set('Please enter a valid absolute URL (e.g., https://example.com)');
+      this.errorMessage.set('Please enter a valid website URL (e.g., rociocejudo.dev or https://example.com)');
       return;
     }
 
@@ -94,7 +100,11 @@ export class AuditWorkspaceComponent {
   async runAllInPipeline(): Promise<void> {
     this.isRunningAllIn.set(true);
     this.lastExecutionResult.set(null);
-    const urlToScan = this.urlInput().trim() || 'https://example.com';
+    let urlToScan = this.urlInput().trim() || 'https://example.com';
+    if (!/^https?:\/\//i.test(urlToScan)) {
+      urlToScan = `https://${urlToScan}`;
+      this.urlInput.set(urlToScan);
+    }
 
     try {
       // 1. Create audit
