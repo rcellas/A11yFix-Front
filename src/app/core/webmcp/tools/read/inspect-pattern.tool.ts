@@ -3,7 +3,7 @@ import { APG_PATTERNS, PatternType } from '../../../models';
 import { BaseWebMcpTool } from '../base-tool';
 
 export interface InspectPatternInput {
-  readonly patternType: string;
+  readonly patternType?: string;
 }
 
 @Injectable({
@@ -11,14 +11,15 @@ export interface InspectPatternInput {
 })
 export class InspectPatternTool extends BaseWebMcpTool<InspectPatternInput, any> {
   readonly name = 'inspect_pattern';
-  readonly description = 'Get WAI-ARIA APG pattern requirements for dialog, tabs, disclosure, combobox, menu_button, breadcrumb, tooltip, alert_dialog, or accordion.';
+  readonly description = 'Get WAI-ARIA APG pattern requirements for all 9 supported patterns, or inspect a specific pattern.';
   readonly tier = 'READ' as const;
   override readonly parameters = {
     patternType: {
       type: 'string',
-      description: 'Pattern type to inspect (e.g. dialog, tabs, disclosure, combobox, menu_button, breadcrumb, tooltip, alert_dialog, accordion)',
-      required: true,
+      description: 'Pattern type to inspect or "all" to retrieve the full catalog of 9 WAI-ARIA patterns',
+      required: false,
       enum: [
+        'all',
         'dialog',
         'tabs',
         'disclosure',
@@ -32,14 +33,19 @@ export class InspectPatternTool extends BaseWebMcpTool<InspectPatternInput, any>
     }
   };
 
-  execute(input: InspectPatternInput): any {
-    if (!input?.patternType) {
-      throw new Error('patternType is required');
+  execute(input?: InspectPatternInput): any {
+    const rawType = input?.patternType?.toLowerCase().replace(/[-\s]/g, '_') || 'all';
+
+    if (rawType === 'all') {
+      return {
+        totalPatterns: Object.keys(APG_PATTERNS).length,
+        patterns: APG_PATTERNS
+      };
     }
-    const key = input.patternType.toLowerCase().replace(/[-\s]/g, '_') as PatternType;
-    const pattern = APG_PATTERNS[key];
+
+    const pattern = APG_PATTERNS[rawType as PatternType];
     if (!pattern) {
-      throw new Error(`Unknown pattern type: ${input.patternType}. Supported: ${Object.keys(APG_PATTERNS).join(', ')}`);
+      throw new Error(`Unknown pattern type: ${input?.patternType}. Supported: all, ${Object.keys(APG_PATTERNS).join(', ')}`);
     }
     return pattern;
   }

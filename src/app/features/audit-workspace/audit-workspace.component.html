@@ -158,6 +158,7 @@
           <div class="option-item">
             <label for="pattern-select" class="option-label">Inspect Pattern:</label>
             <select id="pattern-select" class="option-select" [ngModel]="selectedPatternFilter()" (ngModelChange)="selectedPatternFilter.set($event)">
+              <option value="all">🌟 All WAI-ARIA Patterns (9 Patterns)</option>
               <option value="dialog">Dialog (Modal focus trap)</option>
               <option value="tabs">Tabs (WAI-ARIA Tablist)</option>
               <option value="disclosure">Disclosure (Expandable section)</option>
