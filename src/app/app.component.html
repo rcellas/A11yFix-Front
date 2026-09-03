@@ -24,16 +24,21 @@
       <app-audit-workspace />
 
       @if (auditFacade.isCompleted()) {
-        <!-- Split Workspace: Findings List + Finding Detail -->
-        <div class="workspace-grid">
-          <aside class="grid-col findings-col" aria-label="Findings Navigation">
-            <app-findings-list />
-          </aside>
+        @if ((auditFacade.report()?.findings?.length ?? 0) === 0) {
+          <!-- Full-Width 100% WCAG 2.2 Compliance Pass Report -->
+          <app-compliance-success />
+        } @else {
+          <!-- Split Workspace: Findings List + Finding Detail -->
+          <div class="workspace-grid">
+            <aside class="grid-col findings-col" aria-label="Findings Navigation">
+              <app-findings-list />
+            </aside>
 
-          <section class="grid-col detail-col" aria-label="Finding Inspection and Remediation">
-            <app-finding-detail />
-          </section>
-        </div>
+            <section class="grid-col detail-col" aria-label="Finding Inspection and Remediation">
+              <app-finding-detail />
+            </section>
+          </div>
+        }
       }
     </div>
   </main>

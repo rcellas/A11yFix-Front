@@ -1,0 +1,94 @@
+@if (report(); as rep) {
+  <section class="compliance-container" role="status" aria-label="100% WCAG 2.2 Accessibility Compliance Report">
+    <div class="compliance-card">
+      <!-- Header with Celebration Icon -->
+      <div class="compliance-header">
+        <div class="celebration-badge" aria-hidden="true">🎉</div>
+        <div class="title-meta">
+          <div class="badges-row">
+            <app-badge variant="success">100% WCAG 2.2 Level AA Standard</app-badge>
+            <app-badge variant="info">Verified Zero Violations</app-badge>
+          </div>
+          <h2 class="compliance-title">Audit Passed: Full Accessibility Conformance</h2>
+          <p class="compliance-subtitle">
+            Target URL: <code class="target-url">{{ rep.targetUrl }}</code>
+          </p>
+        </div>
+      </div>
+
+      <!-- Key Metrics Row -->
+      <div class="metrics-grid">
+        <div class="metric-item">
+          <span class="metric-value green">0</span>
+          <span class="metric-label">Critical Issues</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-value green">0</span>
+          <span class="metric-label">Serious Issues</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-value green">0</span>
+          <span class="metric-label">Moderate Issues</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-value green">0</span>
+          <span class="metric-label">Minor Issues</span>
+        </div>
+        <div class="metric-item score-item">
+          <span class="metric-value score">100%</span>
+          <span class="metric-label">Compliance Score</span>
+        </div>
+      </div>
+
+      <!-- Verified Categories Grid -->
+      <div class="categories-section">
+        <h3 class="section-title">Verified WCAG 2.2 Conformance Principles</h3>
+        <div class="categories-grid">
+          <div class="category-card">
+            <span class="cat-icon">👁️</span>
+            <div class="cat-content">
+              <strong>1. Perceivable</strong>
+              <p>Color contrast ratios (4.5:1+), text alternatives for images, and responsive layout scaling pass cleanly.</p>
+            </div>
+          </div>
+
+          <div class="category-card">
+            <span class="cat-icon">⌨️</span>
+            <div class="cat-content">
+              <strong>2. Operable</strong>
+              <p>Full keyboard tabability, zero focus traps, visible focus rings, and proper landmark jump points.</p>
+            </div>
+          </div>
+
+          <div class="category-card">
+            <span class="cat-icon">🧠</span>
+            <div class="cat-content">
+              <strong>3. Understandable</strong>
+              <p>Clear page language declarations, predictable interactive controls, and accessible error identification.</p>
+            </div>
+          </div>
+
+          <div class="category-card">
+            <span class="cat-icon">🛡️</span>
+            <div class="cat-content">
+              <strong>4. Robust (WAI-ARIA APG)</strong>
+              <p>Accurate ARIA roles, valid name/role/value pairs, and assistive technology screen-reader semantics.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions Footer -->
+      <div class="compliance-footer">
+        <div class="timestamp-info">
+          <span>Audit timestamp: {{ rep.timestamp | date:'medium' }}</span>
+        </div>
+        <div class="footer-actions">
+          <app-button variant="primary" size="md" (clicked)="exportJsonReport()" ariaLabel="Download JSON compliance report">
+            ⬇ Download Compliance Certificate (JSON)
+          </app-button>
+        </div>
+      </div>
+    </div>
+  </section>
+}
