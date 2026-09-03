@@ -202,8 +202,63 @@
   color: var(--color-text-secondary);
 }
 
+.regression-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.regression-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.header-titles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.section-subtitle {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.regression-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.copy-status {
+  font-size: var(--font-size-xs);
+  color: var(--color-success);
+  font-weight: var(--font-weight-semibold);
+}
+
+.test-code-block {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  background: #0f172a;
+  color: #f8fafc;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  line-height: var(--line-height-normal);
+}
+
 @media (max-width: 768px) {
   .apg-requirements {
     grid-template-columns: 1fr;
   }
 }
+

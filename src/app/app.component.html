@@ -12,7 +12,14 @@
 
       <div class="header-badges">
         <app-badge variant="info">WCAG 2.2 Level AA Standard</app-badge>
-        <app-badge variant="success">WebMCP Host Active ({{ webMcpHost.registeredToolNames().length }} Tools)</app-badge>
+        <button
+          class="webmcp-badge-btn"
+          (click)="webMcpHost.togglePanel()"
+          aria-label="Open WebMCP Host Inspector panel"
+          title="Click to open live WebMCP tools & telemetry inspector"
+        >
+          <app-badge variant="success">⚡ WebMCP Host ({{ webMcpHost.registeredToolNames().length }} Tools Active)</app-badge>
+        </button>
       </div>
     </div>
   </header>
@@ -37,4 +44,9 @@
       }
     </div>
   </main>
+
+  <!-- WebMCP Inspector Drawer Panel -->
+  @if (webMcpHost.isPanelOpen()) {
+    <app-webmcp-panel />
+  }
 </div>

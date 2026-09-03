@@ -4,6 +4,7 @@ import { BadgeComponent, ButtonComponent, CodeDiffViewerComponent } from '../../
 import { AuditFacade } from '../../core/facades/audit.facade';
 import { RemediationFacade } from '../../core/facades/remediation.facade';
 import { APG_PATTERNS } from '../../core/models';
+import { PlaywrightGeneratorService } from '../../core/webmcp/services/playwright-generator.service';
 
 @Component({
   selector: 'app-finding-detail',
@@ -15,14 +16,24 @@ import { APG_PATTERNS } from '../../core/models';
 export class FindingDetailComponent {
   readonly auditFacade = inject(AuditFacade);
   readonly remediationFacade = inject(RemediationFacade);
+  private readonly playwrightGenerator = inject(PlaywrightGeneratorService);
 
   readonly selectedFinding = this.auditFacade.selectedFinding;
   readonly feedbackMessage = signal<string | null>(null);
+  readonly copyStatus = signal<string | null>(null);
 
   readonly diffText = computed(() => {
     const rem = this.selectedFinding()?.remediation;
     if (!rem) return '';
     return `--- original.html\n+++ remediation.html\n-${rem.originalHtml.split('\n').join('\n-')}\n+${rem.proposedHtml.split('\n').join('\n+')}`;
+  });
+
+  readonly generatedPlaywrightTest = computed(() => {
+    const finding = this.selectedFinding();
+    const report = this.auditFacade.report();
+    if (!finding) return '';
+    const targetUrl = report?.targetUrl || 'https://target.audit';
+    return this.playwrightGenerator.generateTestSnippet(targetUrl, finding);
   });
 
   constructor() {
@@ -32,6 +43,7 @@ export class FindingDetailComponent {
       if (finding) {
         this.remediationFacade.initializeForFinding(finding.id, finding.remediation);
         this.feedbackMessage.set(null);
+        this.copyStatus.set(null);
       }
     });
   }
@@ -65,5 +77,31 @@ export class FindingDetailComponent {
       const msg = err instanceof Error ? err.message : 'Error applying remediation';
       this.feedbackMessage.set(msg);
     }
+  }
+
+  async copyPlaywrightTest(): Promise<void> {
+    const code = this.generatedPlaywrightTest();
+    if (!code) return;
+    try {
+      await navigator.clipboard.writeText(code);
+      this.copyStatus.set('✓ Copied to clipboard!');
+      setTimeout(() => this.copyStatus.set(null), 3000);
+    } catch {
+      this.copyStatus.set('Failed to copy');
+    }
+  }
+
+  downloadPlaywrightTest(): void {
+    const code = this.generatedPlaywrightTest();
+    const finding = this.selectedFinding();
+    if (!code || !finding) return;
+
+    const blob = new Blob([code], { type: 'text/typescript' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `a11y-${finding.ruleId.replace(/[^a-z0-9]/gi, '_')}.spec.ts`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 }
