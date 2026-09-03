@@ -81,10 +81,15 @@ export class AuditFacade {
   });
 
   readonly selectedFinding = computed(() => {
+    const list = this.filteredFindings();
+    if (list.length === 0) return null;
     const id = this._selectedFindingId();
-    if (!id) return null;
-    const findings = this.stateMachine.findings();
-    return findings.find((f) => f.id === id) ?? null;
+    if (id) {
+      const match = list.find((f) => f.id === id);
+      if (match) return match;
+    }
+    // Default to the first finding in the current filtered/sorted list
+    return list[0];
   });
 
   readonly summary = computed(() => {
@@ -106,9 +111,10 @@ export class AuditFacade {
       this.stateMachine.updateProgress(100);
       this.stateMachine.completeScan(report);
 
-      // Select first finding by default if present
-      if (report.findings.length > 0) {
-        this._selectedFindingId.set(report.findings[0].id);
+      // Select first finding from the sorted list by default
+      const first = this.filteredFindings()[0];
+      if (first) {
+        this._selectedFindingId.set(first.id);
       }
     } catch (err: unknown) {
       const errorMsg = err instanceof Error ? err.message : 'An error occurred during audit scan';

@@ -52,6 +52,6 @@ export class FindingsListComponent {
   }
 
   isSelected(finding: Finding): boolean {
-    return this.auditFacade.selectedFindingId() === finding.id;
+    return this.auditFacade.selectedFinding()?.id === finding.id;
   }
 }
