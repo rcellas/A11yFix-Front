@@ -30,6 +30,7 @@ export * from './mappers/audit-dto.mapper';
 export class HttpAuditApiClient implements AuditApiClient {
   private readonly http = inject(HttpClient);
   private readonly config = inject(API_CONFIG);
+  private readonly cachedFindings = new Map<string, Finding>();
 
   private get baseUrl(): string {
     return this.config.baseUrl.replace(/\/+$/, '');
@@ -43,6 +44,7 @@ export class HttpAuditApiClient implements AuditApiClient {
 
         if (directFindings.length > 0) {
           const domainFindings = directFindings.map((dto) => AuditDtoMapper.toDomainFinding(dto));
+          domainFindings.forEach((f) => this.cachedFindings.set(f.id, f));
           return of(AuditDtoMapper.toDomainReport(createdAudit, domainFindings));
         }
 
@@ -53,6 +55,7 @@ export class HttpAuditApiClient implements AuditApiClient {
             map((findingsRaw) => {
               const findingsList = AuditDtoMapper.extractFindingsArray(findingsRaw);
               const domainFindings = findingsList.map((dto) => AuditDtoMapper.toDomainFinding(dto));
+              domainFindings.forEach((f) => this.cachedFindings.set(f.id, f));
               return AuditDtoMapper.toDomainReport(createdAudit, domainFindings);
             })
           );
@@ -70,6 +73,7 @@ export class HttpAuditApiClient implements AuditApiClient {
       map(({ audit, findingsRaw }) => {
         const findingsList = AuditDtoMapper.extractFindingsArray(findingsRaw);
         const domainFindings = findingsList.map((dto) => AuditDtoMapper.toDomainFinding(dto));
+        domainFindings.forEach((f) => this.cachedFindings.set(f.id, f));
         return AuditDtoMapper.toDomainReport(audit, domainFindings);
       })
     );
@@ -79,16 +83,27 @@ export class HttpAuditApiClient implements AuditApiClient {
     return this.http
       .get<BackendFindingDto>(`${this.baseUrl}/audits/${auditId}/findings/${findingId}`)
       .pipe(
-        map((dto) => AuditDtoMapper.toDomainFinding(dto)),
+        map((dto) => {
+          const finding = AuditDtoMapper.toDomainFinding(dto);
+          this.cachedFindings.set(finding.id, finding);
+          return finding;
+        }),
         catchError(() => {
           return this.http
             .get<BackendFindingDto>(`${this.baseUrl}/findings/${findingId}`)
-            .pipe(map((dto) => AuditDtoMapper.toDomainFinding(dto)));
+            .pipe(
+              map((dto) => {
+                const finding = AuditDtoMapper.toDomainFinding(dto);
+                this.cachedFindings.set(finding.id, finding);
+                return finding;
+              })
+            );
         })
       );
   }
 
   proposeRemediation(request: ProposeRemediationRequest): Observable<FindingRemediation> {
+    const cached = this.cachedFindings.get(request.findingId);
     return this.http
       .post<BackendRemediationDto | BackendRemediationDto[] | BackendRemediationProposalDto>(
         `${this.baseUrl}/findings/${request.findingId}/remediation`,
@@ -98,14 +113,18 @@ export class HttpAuditApiClient implements AuditApiClient {
         map((res) => {
           const item = Array.isArray(res) ? res[0] : res;
           const proposal = item && 'proposal' in item ? item.proposal : (item as BackendRemediationProposalDto);
-          return {
-            originalHtml: '<div class="target-element">...</div>',
-            proposedHtml: proposal?.suggestedDiff || (proposal?.suggestedAttributes ? `<div class="target-element" ${Object.entries(proposal.suggestedAttributes).map(([k, v]) => `${k}="${v}"`).join(' ')}>...</div>` : '<div class="target-element" aria-label="Accessible">...</div>'),
-            explanation: proposal?.title || proposal?.description || 'AI remediation proposal generated.',
-            apgPattern: proposal?.suggestedPattern || 'dialog'
-          };
+
+          if (proposal?.suggestedDiff && !proposal.suggestedDiff.includes('<!-- Apply accessibility fix')) {
+            return {
+              originalHtml: cached?.htmlSnippet || '<div class="target-element">...</div>',
+              proposedHtml: proposal.suggestedDiff,
+              explanation: proposal?.title || proposal?.description || 'AI remediation proposal generated.',
+              apgPattern: proposal?.suggestedPattern || 'dialog'
+            };
+          }
+          return ContextualRemediationHelper.generate(cached || request.findingId);
         }),
-        catchError(() => of(ContextualRemediationHelper.generate(request.findingId)))
+        catchError(() => of(ContextualRemediationHelper.generate(cached || request.findingId)))
       );
   }
 
