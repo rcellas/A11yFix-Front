@@ -166,6 +166,12 @@
       </section>
     }
   </article>
+} @else if (auditFacade.report()?.findings?.length === 0) {
+  <div class="empty-selection all-clear-detail" role="status">
+    <span class="shield-icon">🛡️</span>
+    <h4 class="clean-heading">No Remediation Required</h4>
+    <p class="clean-sub">This website satisfies all evaluated WCAG 2.2 Level AA accessibility rules. No source code modifications are required.</p>
+  </div>
 } @else {
   <div class="empty-selection" role="status">
     <p>Select a finding from the list to inspect its WCAG 2.2 criterion and AI remediation diff.</p>

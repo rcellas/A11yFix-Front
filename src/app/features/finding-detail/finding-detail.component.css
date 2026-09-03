@@ -202,6 +202,34 @@
   color: var(--color-text-secondary);
 }
 
+.empty-selection.all-clear-detail {
+  border: 1px solid #86efac;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.shield-icon {
+  font-size: 2.5rem;
+}
+
+.clean-heading {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: #14532d;
+}
+
+.clean-sub {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: #166534;
+  max-width: 400px;
+  line-height: var(--line-height-normal);
+}
+
 .regression-section {
   display: flex;
   flex-direction: column;
